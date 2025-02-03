@@ -32,12 +32,12 @@ class TenantController extends Controller
     {
         //dd($request->all());
         $validatedData = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:tenants,email',
-            'domain_name' => 'required',
+            'name' =>  'required|unique:tenants,name',
+            'email' => 'required|email|unique:tenants,email',         
             'password' => 'required|confirmed',
-
+            'domain_name' => 'required|unique:domains,domain',
         ]);
+       // dd($validatedData);
         $tenant = Tenant::create($validatedData);
         $tenant->domains()->create([
             'domain' => $validatedData['domain_name'].'.'.config('app.domain'),
@@ -75,6 +75,8 @@ class TenantController extends Controller
      */
     public function destroy(Tenant $tenant)
     {
-        //
+       
+        $tenant->delete();
+        return redirect()->route('tenants.index')->with('success', 'Tenant deleted successfully.');
     }
 }
