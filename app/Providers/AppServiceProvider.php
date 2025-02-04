@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Stancl\Tenancy\DatabaseConfig;
 use Stancl\Tenancy\Contracts\TenantWithDatabase as Tenant;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,7 @@ class AppServiceProvider extends ServiceProvider
         DatabaseConfig::generateDatabaseNamesUsing(function (Tenant $tenant) {
             return  config('tenancy.database.prefix'). $tenant->getTenantKey() ."-".$tenant->name. config('tenancy.database.suffix') ;
         });
+		//this is sharing the error object to the current tenant scope so that can be access in the views
+		View::share('errors', app('Illuminate\Support\MessageBag'));
     }
 }
