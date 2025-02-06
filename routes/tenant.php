@@ -7,6 +7,7 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\App\ProfileController;
 use App\Http\Controllers\App\UserController;
+use App\Http\Controllers\App\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,13 +31,11 @@ Route::middleware([
 	});
 	
 	Route::middleware('auth')->group(function () {
-		Route::get('/dashboard', function () {
-			return view('App.dashboard');
-		});
+		Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 		Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 		Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 		Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 		Route::resource('users', UserController::class);
 	});
+    require __DIR__.'/tenant-auth.php';
 });
-require __DIR__.'/tenant-auth.php';

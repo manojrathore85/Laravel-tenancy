@@ -12,6 +12,6 @@ class TenantGuestLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.tenant-guest');
+        return view('App.layouts.guest');
     }
 }
