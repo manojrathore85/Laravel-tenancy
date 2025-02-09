@@ -1,0 +1,44 @@
+If we wan to use a user authaticated with different model like in tinancy 
+we have to user model one for main superadmin and second for tenant/ client users
+
+so we have using guard 
+
+in config/auth.php
+
+add this 'guards' => [
+
+        'tenant' => [
+            'driver' => 'session',
+            'provider' => 'tenant_users',
+        ],
+        
+    ],
+
+and add in providers 
+
+    'providers' => [
+       
+
+        'tenant_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\App\User::class,
+        ],
+    ],
+
+and add this in config/tenancy.php
+
+    'tenant_auth' => [
+        'guard' => 'tenant',
+        'provider' => 'tenant_users',
+    ],
+
+then authanticated user as in auth controller
+
+if (Auth::guard('tenant')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard');
+        }
+
+then add the guard in route  
+
+Route::middleware('auth:tenant')->get('dashboard', 'TenantDashboardController@index');

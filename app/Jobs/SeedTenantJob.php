@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Tenant;
-use App\Models\User;
+use App\Models\App\User;
 
 class SeedTenantJob implements ShouldQueue
 {
@@ -28,11 +28,13 @@ class SeedTenantJob implements ShouldQueue
     public function handle(): void
     {
         $tenant = $this->tenant->run(function (){
-            User::create([
+           $user = User::create([
                 'name' => $this->tenant->name,
                 'email' => $this->tenant->email,
                 'password' => $this->tenant->password,
+
             ]);
+            $user->assignRole('admin');
         });
     }
 }

@@ -6,6 +6,8 @@ use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\App\User;
+use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Role as ModelsRole;
 
 class UserController extends Controller
 {
@@ -14,9 +16,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('role')->get();
+        $users = User::with('roles')->get();
        
-        return view('user.index', ['users' => $users]);
+        return view('app.user.index', ['users' => $users]);
     }
 
     /**
@@ -24,7 +26,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user.create');
+        $roles = ModelsRole::pluck('name', 'name')->all();
+        return view('app.user.create', [ 'user' => null, 'roles' => $roles]);
     }
 
     /**
@@ -37,15 +40,12 @@ class UserController extends Controller
             'name' =>  'required|unique:users,name',
             'email' => 'required|email|unique:users,email',         
             'password' => 'required|confirmed',
-            'domain_name' => 'required|unique:domains,domain',
+            'role' => 'required',
         ]);
        // dd($validatedData);
         $user = User::create($validatedData);
-        $user->domains()->create([
-            'domain' => $validatedData['domain_name'].'.'.config('app.domain'),
-
-        ]);
-        return redirect()->route('users.index')->with('success', 'Tenant created successfully.');
+        $user->assignRole($request->role);
+        return redirect()->route('user.index')->with('success', 'User created successfully.');
     }
 
     /**
@@ -60,8 +60,9 @@ class UserController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(User $user)
-    {
-        //
+    {       
+        $roles = ModelsRole::pluck('name', 'name')->all();
+        return view('App.user.create', ['user' => $user, 'roles' => $roles]);
     }
 
     /**
@@ -69,7 +70,14 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $validatedData = $request->validate([
+            'name' =>  'required|unique:users,name,'.$user->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,           
+            'role' => 'required',
+        ]);
+        $user->update($validatedData);
+        $user->syncRoles($request->role);
+        return redirect()->route('user.index')->with('success', 'User updated successfully.');
     }
 
     /**
@@ -79,6 +87,6 @@ class UserController extends Controller
     {
        
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'Tenant deleted successfully.');
+        return redirect()->route('user.index')->with('success', 'User deleted successfully.');
     }
 }

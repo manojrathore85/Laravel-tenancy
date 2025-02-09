@@ -29,14 +29,14 @@ class AuthenticatedSessionController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-         if (Auth::attempt($credentials)) {
-           
+        
+        if (Auth::guard('tenant')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
     
         return back()->withErrors([
-            'email' => 'Helllooooo The provided credentials do not match our records.',
+            'email' => 'The provided credentials do not match our records.',
         ]);
     }
 

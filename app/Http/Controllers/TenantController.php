@@ -43,7 +43,7 @@ class TenantController extends Controller
             'domain' => $validatedData['domain_name'].'.'.config('app.domain'),
 
         ]);
-        return redirect()->route('tenants.index')->with('success', 'Tenant created successfully.');
+        return redirect()->route('tenant.index')->with('success', 'Tenant created successfully.');
     }
 
     /**
@@ -77,6 +77,6 @@ class TenantController extends Controller
     {
        
         $tenant->delete();
-        return redirect()->route('tenants.index')->with('success', 'Tenant deleted successfully.');
+        return redirect()->route('tenant.index')->with('success', 'Tenant deleted successfully.');
     }
 }

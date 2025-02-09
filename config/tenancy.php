@@ -196,4 +196,9 @@ return [
         '--class' => 'TenantDatabaseSeeder', // root seeder class
         // '--force' => true,
     ],
+    
+    'tenant_auth' => [
+        'guard' => 'tenant',
+        'provider' => 'tenant_users',
+    ],
 ];

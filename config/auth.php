@@ -17,6 +17,10 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
+    'superadmin_auth' => [
+        'guard' => 'web',
+        'provider' => 'users',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -40,6 +44,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'tenant' => [
+            'driver' => 'session',
+            'provider' => 'tenant_users',
+        ],
+        
     ],
 
     /*
@@ -65,10 +74,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'tenant_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\App\User::class,
+        ],
     ],
 
     /*
