@@ -52,6 +52,16 @@
 
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                         </div>
+                        <!-- Phone -->
+                        <div class="mt-4">
+                            <x-input-label for="phone" :value="__('Phone No.')" />
+
+                            <x-text-input id="phone" class="block mt-1 w-full"
+                                            type="text"
+                                            name="phone" required autocomplete="new-password" />
+
+                            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                        </div>
 
                         <div class="flex items-center justify-end mt-4">
                             <x-primary-button class="ms-4">

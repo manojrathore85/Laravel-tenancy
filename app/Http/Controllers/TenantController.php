@@ -36,6 +36,7 @@ class TenantController extends Controller
             'email' => 'required|email|unique:tenants,email',         
             'password' => 'required|confirmed',
             'domain_name' => 'required|unique:domains,domain',
+            'phone' => 'required|unique:tenants,phone',
         ]);
        // dd($validatedData);
         $tenant = Tenant::create($validatedData);

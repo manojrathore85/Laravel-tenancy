@@ -23,7 +23,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'name',
         'email', 
         'database_name',             
-        'password'
+        'password',
+        'phone',
         ];
     }
 

@@ -20,6 +20,7 @@ class CreateTenantsTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('phone')->unique();
 
 
             // your custom columns may go here
