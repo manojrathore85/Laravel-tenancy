@@ -20,7 +20,8 @@ class AuthenticatedSessionController extends Controller
         try {
             //$user = $request->user();
             $user = User::find($request->user()->id);
-            $token = $request->user()->createToken($user->email)->plainTextToken;
+            $token = $request->user()->getOrCreateToken($user->email, ['*'], now()->addDays(30))->plainTextToken;
+            //$token = $request->user()->createToken($user->email)->plainTextToken;
             return response()->json([
                 'status' => 'success', 
                 'message' => 'User logged in successfully', 
@@ -36,20 +37,22 @@ class AuthenticatedSessionController extends Controller
         
         //$request->session()->regenerate();
 
-        return response()->noContent();
+        // return response()->noContent();
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): Response
+    public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return response()->noContent();
+        $token = $request->user()->tokens()->where('id', $request->user()->currentAccessToken()->id)->first();
+        $token->delete();
+        // $token->expires_at = now()->subMinute();
+        // $token->save();
+    
+        return response()->json([
+            'message' => 'Logged out successfully',
+            'status' => 'success'
+        ]);        
     }
 }

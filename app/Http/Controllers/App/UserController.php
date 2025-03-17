@@ -5,7 +5,7 @@ namespace App\Http\Controllers\App;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\App\User;
+use App\Models\Tenant\User;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Models\Role as ModelsRole;
 
@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $users = User::with('roles')->get();
        
-        return view('app.user.index', ['users' => $users]);
+        return view('App.user.index', ['users' => $users]);
     }
 
     /**
@@ -27,7 +27,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = ModelsRole::pluck('name', 'name')->all();
-        return view('app.user.create', [ 'user' => null, 'roles' => $roles]);
+        return view('App.user.create', [ 'user' => null, 'roles' => $roles]);
     }
 
     /**
@@ -41,6 +41,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',         
             'password' => 'required|confirmed',
             'role' => 'required',
+            'phone' => 'required|unique:tenants,phone',
         ]);
        // dd($validatedData);
         $user = User::create($validatedData);

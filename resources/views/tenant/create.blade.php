@@ -58,7 +58,7 @@
 
                             <x-text-input id="phone" class="block mt-1 w-full"
                                             type="text"
-                                            name="phone" required autocomplete="new-password" />
+                                            name="phone" required autocomplete="Phone" />
 
                             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                         </div>

@@ -42,6 +42,12 @@ class RouteServiceProvider extends ServiceProvider
             }
             
         });
+
+        // // Register tenant-specific API routes (for all tenant subdomains)
+        // Route::middleware(['api', 'tenant']) // Ensure 'tenant' middleware is applied
+        // ->prefix('api')
+        // ->domain('{tenant}.' . config('tenancy.tenant_base_domain')) // Use wildcard domain for tenants
+        // ->group(base_path('routes/tenant-api.php'));
     }
 
     /**

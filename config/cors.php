@@ -19,9 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+ 
+    'allowed_origins' => ['http://localhost:3000', 'http://*.localhost:3000'], // Allow subdomains
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['#^http://.*\.localhost(:\d+)?$#'], // Allow any subdomain under localhost
 
     'allowed_headers' => ['*'],
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 class TenantController extends Controller
 {
     /**
@@ -112,11 +113,20 @@ class TenantController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tenant $tenant)
+    public function destroy($ids)
     {
        
-        try {                    
-            $tenant->delete();           
+        try { 
+            // Convert comma-separated IDs into an array
+            $idsArray = explode(',', $ids);
+
+            $validator = Validator::make(['ids' => $idsArray], [
+                'ids'   => ['required', 'array'],  // Ensures it's an array
+                'ids.*' => ['uuid', 'exists:tenants,id'],  // Each ID must be a valid UUID and exist in the users table
+            ]);
+
+            // Delete users where ID is in the given array
+            Tenant::whereIn('id', $idsArray)->delete();           
             return response()->json([
                 'status' => 'success',
                 'message' => 'Your Account is deleted successfully',              

@@ -21,7 +21,7 @@ and add in providers
 
         'tenant_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\App\User::class,
+            'model' => App\Models\Tenant\User::class,
         ],
     ],
 
@@ -64,3 +64,41 @@ add frontend domain url
 
 changes .env file 
 add front end domain url
+
+===================================================================================================
+
+After the confugered the axios like 
+const tenantDomain = window.location.hostname; // Auto-detect tenant
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:8000/api', // Replace with your API base URL
+    headers: {
+        'X-Tenant-Domain': tenantDomain,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    },
+    withCredentials : true, 
+});
+
+able to send the request from subdomain to main domain and that time cors error solved by adding this line in cors.php file 
+return [
+    'paths' => ['*'],
+
+    'allowed_methods' => ['*'],
+
+ 
+    'allowed_origins' => ['http://localhost:3000', 'http://*.localhost:3000'], // Allow subdomains
+
+    'allowed_origins_patterns' => ['#^http://.*\.localhost(:\d+)?$#'], // Allow any subdomain under localhost
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => true,
+
+];
+
+Now i am facing the routing to idetifed the tenant rout and tenant by the sub domain in the laravel tenancy
+

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\App;
+namespace App\Models\Tenant;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +13,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    protected $guard_name = ['web','sanctum'];
+    protected $guard_name = ['sanctum']; //'web',
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'gender',
         'password',
         'phone',
     ];

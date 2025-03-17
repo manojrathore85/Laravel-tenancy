@@ -11,6 +11,12 @@ return [
 
     'domain_model' => Domain::class,
 
+    'tenant_routes' => [
+        'prefix' => 'api', // API routes prefix for tenants
+        'middleware' => ['api'],
+    ],
+
+
     /**
      * The list of domains hosting your central app.
      *
@@ -19,6 +25,8 @@ return [
     'central_domains' => [
         '127.0.0.1',
         'localhost',
+        'tenancy.test',
+        'tenancy.local',
     ],
 
     /**

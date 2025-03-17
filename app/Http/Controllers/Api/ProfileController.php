@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+
+
+
 class ProfileController extends Controller
 {
     /**
@@ -49,7 +50,7 @@ class ProfileController extends Controller
             $user = User::find($request->id);            
             $user->delete();
             //$request->session()->invalidate();
-            $request->session()->regenerateToken();
+            //$request->session()->regenerateToken();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Your Account is deleted successfully',              
@@ -60,5 +61,31 @@ class ProfileController extends Controller
                 'message' => $th->getMessage(),              
             ], 500);
         }       
+    }
+    public function changePassword(Request $request){
+
+        $request->validate([
+            'current_password' => ['required', 'string', function ($attribute, $value, $fail) {
+                if (!Hash::check($value, Auth::user()->password)) {
+                    $fail('The current password is incorrect.');
+                }
+            }],
+            'password' => ['required', 'string', 'min:8', 'max:16','confirmed', 'different:current_password'],
+        ]);
+        try {
+            // Update password
+            $user = User::find(Auth::user()->id);
+            $user->password = Hash::make($request->password);
+            $user->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Password Updated successfully',              
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),              
+            ], 500);
+        }
     }
 }

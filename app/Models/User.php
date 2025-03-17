@@ -45,5 +45,26 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function getOrCreateToken(string $name, array $abilities = ['*'], DateTimeInterface $expiresAt = null)
+    {
+        $existingToken = $this->tokens()
+            ->where('abilities', json_encode($abilities))
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if ($existingToken) {
+             // You cannot return the hashed token directly; you need to regenerate it.
+            $plainTextToken = $this->generateTokenString();
+
+            // Update the existing token with a new plain text value
+            $existingToken->update([
+                'token' => hash('sha256', $plainTextToken),
+            ]);
+
+            return new NewAccessToken($existingToken, $existingToken->getKey().'|'.$plainTextToken);
+            //return new NewAccessToken($existingToken, $existingToken->getKey().'|'.$existingToken->token);
+        }
+        return $this->createToken($name, $abilities, $expiresAt);
+    }
 
 }

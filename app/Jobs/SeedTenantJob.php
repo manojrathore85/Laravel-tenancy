@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Tenant;
-use App\Models\App\User;
+use App\Models\Tenant\User;
 
 class SeedTenantJob implements ShouldQueue
 {
