@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('route')->unique();
-            $table->string('component')->unique();
-            $table->string('icon')->nullable();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->integer('sort_order')->default(0)->nullable();         
+            $table->string('code')->unique();
+            $table->string('status')->default(0); // 0 = active, 1 = inactive
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('projects');
     }
 };

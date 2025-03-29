@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('gender')->nullable();
             $table->string('phone')->unique();
+            $table->string('status')->default(0); // 0 = active, 1 = inactive
             $table->rememberToken();
             $table->timestamps();
         });

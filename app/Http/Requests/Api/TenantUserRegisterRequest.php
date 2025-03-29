@@ -25,6 +25,7 @@ class TenantUserRegisterRequest extends FormRequest
     {
         $userId = $this->route('id') ? $this->route('id') : null;
         $isProfileUpdate = $this->routeIs('profile.update');
+        $isRegister = $this->routeIs('register');
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -34,7 +35,7 @@ class TenantUserRegisterRequest extends FormRequest
                 'max:255',
                 Rule::unique(TenantUser::class)->ignore($userId)
             ],
-            'role' => $isProfileUpdate ? ['nullable', 'string'] : ['required', 'string'], // Role required only if not a profile update
+            'role' => $isProfileUpdate || $isRegister ? ['nullable', 'string'] : ['required', 'string'], // Role required only if not a profile update
             'gender' => ['required', 'in:Male,Female'],
             'phone' => [
                 'required',

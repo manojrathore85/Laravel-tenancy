@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Tenant;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Api\TenantUserRegisterRequest;
-use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Api\LoginRequest;
 use App\Models\Tenant;
 use App\Models\Tenant\User as TenantUser;
 use Illuminate\Auth\Events\Registered;
@@ -27,6 +27,30 @@ class TenantUserController extends Controller
             ], 500);
         }
     }
+    public function register(TenantUserRegisterRequest $request){
+    
+        try {  
+            $user = TenantUser::create([
+                'name' => $request->name,
+                'email' => $request->email,               
+                'password' =>$request->password,
+                'gender' => $request->gender,
+                'phone' => $request->phone,
+                'status' => 1,
+            ]);
+            event(new Registered($user));    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User Registerd successfully activation will be done by admin',               
+            ], 200);
+          
+        } catch (\Throwable $th) {          
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
+        }  
+    }
     public function store(TenantUserRegisterRequest $request){
     
         try {  
@@ -38,8 +62,6 @@ class TenantUserController extends Controller
                 'gender' => $request->gender,
                 'phone' => $request->phone,
             ]);
-            echo "wroking or not";
-            print_r($user);
             $user->assignRole($request->role);
             //$user->assignRole('user');
             //$user->assignRole('user');
@@ -68,8 +90,8 @@ class TenantUserController extends Controller
         $request->authenticate();
         try {
             //$user = $request->user();
-            $user = TenantUser::find($request->user()->id);
-            $token = $request->user()->createToken($user->email)->plainTextToken;
+            $user = TenantUser::find(auth()->guard('tenant')->user()->id);
+            $token = $user->createToken($user->email)->plainTextToken;
             return response()->json([
                 'status' => 'success', 
                 'message' => 'User logged in successfully', 

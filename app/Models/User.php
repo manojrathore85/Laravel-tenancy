@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use DateTimeInterface;
 use Illuminate\Support\Facades\Hash;
-
+use Laravel\Sanctum\NewAccessToken;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'password',
         'gender',
         'phone',
+        'status',
     ];
 
     /**
@@ -45,6 +47,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+        /**
+     * Create a new personal access token for the user.
+     *
+     * @param  string  $name
+     * @param  array  $abilities
+     * @param  \DateTimeInterface|null  $expiresAt
+     * @return \Laravel\Sanctum\NewAccessToken
+     */
     public function getOrCreateToken(string $name, array $abilities = ['*'], DateTimeInterface $expiresAt = null)
     {
         $existingToken = $this->tokens()
