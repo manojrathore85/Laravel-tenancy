@@ -20,9 +20,11 @@ return [
     'allowed_methods' => ['*'],
 
  
-    'allowed_origins' => ['http://localhost:3000', 'http://*.localhost:3000'], // Allow subdomains
+    //'allowed_origins' => ['http://localhost:3000', 'http://*.localhost:3000'], // Allow subdomains
+    'allowed_origins' => ['http://localhost:3000', 'http://*.localhost:3000', 'http://reactims.hpchft.local', 'http://*.reactims.hpchft.local', 'http://reactims.hpchft.ai', 'http://*.reactims.hpchft.ai'], // Allow subdomains
 
-    'allowed_origins_patterns' => ['#^http://.*\.localhost(:\d+)?$#'], // Allow any subdomain under localhost
+    'allowed_origins_patterns' => ['#^http://.*\.localhost(:\d+)?$#', '#^http://.*\.localhost(:\d+)?$#'], // Allow any subdomain under localhost
+    //'allowed_origins_patterns' => ['#^http://.*\.laravelims\.hpchft\.local(:\d+)?$#'],
 
     'allowed_headers' => ['*'],
 

@@ -41,10 +41,10 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',         
             'password' => 'required|confirmed',
             'role' => 'required',
-            'phone' => 'required|unique:tenants,phone',
+            'phone' => 'required|unique:users,phone',
         ]);
        // dd($validatedData);
-        $user = User::create($validatedData);
+        $user = User::create($request->all());
         $user->assignRole($request->role);
         return redirect()->route('user.index')->with('success', 'User created successfully.');
     }
@@ -75,8 +75,9 @@ class UserController extends Controller
             'name' =>  'required|unique:users,name,'.$user->id,
             'email' => 'required|email|unique:users,email,'.$user->id,           
             'role' => 'required',
+            'phone' => 'required|unique:users,phone,'.$user->id,
         ]);
-        $user->update($validatedData);
+        $user->update($request->all());
         $user->syncRoles($request->role);
         return redirect()->route('user.index')->with('success', 'User updated successfully.');
     }

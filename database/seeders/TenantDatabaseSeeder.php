@@ -18,6 +18,11 @@ class TenantDatabaseSeeder extends Seeder
         //     'name' => 'Super Admin',
         //     'email' => 'superadmin@abc.com',
         // ]);
-        $this->call(RoleSeeder::class);
+        $this->call(
+            [
+                RoleSeeder::class,
+                MenuSeeder::class,
+            ]
+        );
     }
 }

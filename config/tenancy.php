@@ -27,6 +27,8 @@ return [
         'localhost',
         'tenancy.test',
         'tenancy.local',
+        'laravelims.hpchft.local',
+        'laravelims.hpchft.ai',
     ],
 
     /**
@@ -143,7 +145,7 @@ return [
          * disable asset() helper tenancy and explicitly use tenant_asset() calls in places
          * where you want to use tenant-specific assets (product images, avatars, etc).
          */
-        'asset_helper_tenancy' => true,
+        'asset_helper_tenancy' => false,
     ],
 
     /**
