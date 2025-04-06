@@ -16,43 +16,40 @@ class MenuController extends Controller
     public function index()
     {
         try {
-            $menu = Menu::with('parent:id,name')->get();
-            return response()->json($menu, 200);
+            $menus = Menu::with('parent:id,name')->get();
+            return response()->json($menus, 200);
         } catch (\Throwable $th) {
             return response()->json([
-                'status'=>'error',
-                'message'=>$th->getMessage(),
-            ],500);
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-       
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(MenuRequest $request)
     {
-        try{
-        
+        try {
+
             $menu = Menu::create($request->all());
             return response()->json([
-                'status'=> 'success',
-                'message'=> 'Menu created successfully',
-                'menu'=>$menu,
-            ],200);
-            }catch(\Throwable $th){
-                return response()->json([
-                    'status'=> 'fail',
-                    'message' => $th->getMessage(), 
-                ]);
-            }
+                'status' => 'success',
+                'message' => 'Menu created successfully',
+                'menu' => $menu,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -60,7 +57,7 @@ class MenuController extends Controller
      */
     public function show(string $id)
     {
-        try { 
+        try {
             $menu = Menu::find($id);
             return response()->json($menu, 200);
         } catch (\Throwable $th) {
@@ -68,7 +65,7 @@ class MenuController extends Controller
                 'status' => 'fail',
                 'message' => $th->getMessage(),
             ], 500);
-        }  
+        }
     }
 
     /**
@@ -89,12 +86,12 @@ class MenuController extends Controller
             $user->update($request->all());
             return response()->json([
                 'status' => 'success',
-                'message' => 'User Updated successfully',              
+                'message' => 'User Updated successfully',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => $th->getMessage(),              
+                'message' => $th->getMessage(),
             ], 500);
         }
     }
@@ -104,21 +101,20 @@ class MenuController extends Controller
      */
     public function destroy(string $ids)
     {
-        if(empty($ids)) {
+        if (empty($ids)) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Ids not found',                             
-            ], 400);          
+                'message' => 'Ids not found',
+            ], 400);
         }
-        try {   
-            $idsArray = explode(',', $ids);           
+        try {
+            $idsArray = explode(',', $ids);
 
             Menu::destroy($idsArray);
             return response()->json([
                 'status' => 'success',
-                'message' => 'User Updated successfully',            
+                'message' => 'User Updated successfully',
             ], 200);
-        
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -126,45 +122,71 @@ class MenuController extends Controller
             ], 500);
         }
     }
-    public function menuPermission($roleId){
-        try{
+    public function menuPermission($roleId)
+    {
+        try {
             $menuPermissions = Menu::with([
                 'roleMenuPermissions' => function ($query) use ($roleId) {
                     $query->where('role_id', $roleId);
                 }
-            ])->get(); 
+            ])->get();
             //dd($menuPermissions);
-             // Transform the data to ensure default values when roleMenuPermissions is null
+            // Transform the data to ensure default values when roleMenuPermissions is null
             $menuPermissions = $menuPermissions->map(function ($menu) use ($roleId) {
                 return [
-                        "id"=>$menu->id,
-                        "name"=> $menu->name,
-                        "route"=> $menu->route,
-                        "icon"=> $menu->icon,
-                        "parent_id"=>  $menu->parent_id,
-                        "sort_order"=>  $menu->sort_order,
-                        "created_at"=> $menu->created_at,
-                        "updated_at"=> $menu->updated_at,
-                        "component"=> $menu->component,
-                        "role_menu_permissions"=> $menu->roleMenuPermissions ??  [
-                                                  
-                            "role_id"=> $roleId,
-                            "menu_id"=> $menu->id,
-                            "can_add"=> false,
-                            "can_edit"=> false,
-                            "can_delete"=> false,
-                            "can_view"=> false,
-                            "created_at" => false,
-                            "updated_at"=>  false,                           
-                        ]
+                    "id" => $menu->id,
+                    "name" => $menu->name,
+                    "route" => $menu->route,
+                    "icon" => $menu->icon,
+                    "parent_id" =>  $menu->parent_id,
+                    "sort_order" =>  $menu->sort_order,
+                    "created_at" => $menu->created_at,
+                    "updated_at" => $menu->updated_at,
+                    "component" => $menu->component,
+                    "role_menu_permissions" => $menu->roleMenuPermissions ??  [
+
+                        "role_id" => $roleId,
+                        "menu_id" => $menu->id,
+                        "can_add" => false,
+                        "can_edit" => false,
+                        "can_delete" => false,
+                        "can_view" => false,
+                        "created_at" => false,
+                        "updated_at" =>  false,
+                    ]
                 ];
             });
             return response()->json($menuPermissions, 200);
-        }catch(\Throwable $th){
+        } catch (\Throwable $th) {
             return response()->json([
-            'status' => 'fail',
-            'message' => $th->getMessage(), 
-        ], 500);
+                'status' => 'fail',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getMenuByRole($roleId)
+    {
+        try {
+            $menus = Menu::with(['parent:id,name', 'roleMenuPermissions'])
+                ->whereHas('roleMenuPermissions', function ($query) use ($roleId) {
+                    $query->where(function ($q) {
+                        $q->where('can_add', 1)
+                        ->orWhere('can_edit', 1)
+                        ->orWhere('can_view', 1)
+                        ->orWhere('can_delete', 1);
+                       
+                    })
+                    ->where('role_id', $roleId);
+                    })               
+                ->get();
+            
+            return response()->json($menus, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
         }
     }
 }

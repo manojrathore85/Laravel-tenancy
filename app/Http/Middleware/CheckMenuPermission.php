@@ -28,18 +28,21 @@ class CheckMenuPermission
         // Fetch menu by slug
         $menuRecord = Menu::where('route', $menu)->first();
         if (!$menuRecord) {
-            abort(404, 'Menu not found');
+            abort(404, 'Menu: '.$menu. ' not found');
         }
-        //dd($user->roles->first()->id);
+        if(!$user->roles->first()){
+            abort(404, 'User: '.$user->name. 'Role not found');
+        };
         // Check permission in role_menu_permissions table
         $hasPermission = RoleMenuPermission::where('role_id', $user->roles->first()->id)
             ->where('menu_id', $menuRecord->id)
             ->where($action, true)
             ->exists();
-
-        if (!$hasPermission) {
-            abort(403, 'Unauthorized');
+    
+        if (!$hasPermission) {          
+            abort(403, 'Unauthorized For Menu: '.$menuRecord->name.' action: '.$action);
         }
+      
         return $next($request);
     }
 }

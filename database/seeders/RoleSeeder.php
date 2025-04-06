@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tenant\RoleMenuPermission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -18,6 +19,37 @@ class RoleSeeder extends Seeder
             $admin = Role::create(['name' => 'admin', 'guard_name' => 'tenant']);
             $manager = Role::create(['name' => 'manager', 'guard_name' => 'tenant' ]);
             $user = Role::create(['name' => 'user', 'guard_name' => 'tenant']);
+
+            //Role Menu Permissions Menu id the order of menu seeding 
+            RoleMenuPermission::create([
+                'role_id' => $admin->id,
+                'menu_id' => 1,
+                'can_add' => true,
+                'can_edit' => true,
+                'can_delete' => true,
+                'can_view' => true,
+                
+            ]);
+            RoleMenuPermission::create([
+                'role_id' => $admin->id,
+                'menu_id' => 2,
+                'can_add' => true,
+                'can_edit' => true,
+                'can_delete' => true,
+                'can_view' => true,
+                
+            ]);
+            RoleMenuPermission::create([
+                'role_id' => $manager->id,
+                'menu_id' => 1,
+                'can_add' => true,
+                'can_edit' => false,
+                'can_delete' => false,
+                'can_view' => true,
+                
+            ]);
+  
+
 
         // Create Permissions
         $permissions = [

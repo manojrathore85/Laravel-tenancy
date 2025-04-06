@@ -20,8 +20,8 @@ class TenantDatabaseSeeder extends Seeder
         // ]);
         $this->call(
             [
-                RoleSeeder::class,
                 MenuSeeder::class,
+                RoleSeeder::class,
             ]
         );
     }

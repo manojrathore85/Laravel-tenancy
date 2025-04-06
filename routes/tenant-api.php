@@ -20,32 +20,32 @@ Route::middleware([
 
      // Tenant-specific authentication
     Route::post('/login', [TenantUserController::class, 'login']);
-    Route::post('/register', [TenantUserController::class, 'register'])->name('register');
+    Route::post('/register', [TenantUserController::class, 'register'])->name('api.register');
     Route::post('/logout', [TenantUserController::class, 'logout'])->middleware('auth:sanctum');
 
     // Protected routes for tenants
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/users', [TenantUserController::class, 'index']);
-        Route::post('/users', [TenantUserController::class, 'store']);
-        Route::get('/users/{id}', [TenantUserController::class, 'show']);
-        Route::put('/users/{id}', [TenantUserController::class, 'update']);
-        Route::delete('/users/{ids}', [TenantUserController::class, 'destroy']);
+        Route::get('/users', [TenantUserController::class, 'index'])->middleware('menuPermission:users,can_view');
+        Route::post('/users', [TenantUserController::class, 'store'])->middleware('menuPermission:users,can_add');
+        Route::get('/users/{id}', [TenantUserController::class, 'show'])->middleware('menuPermission:users,can_view');
+        Route::put('/users/{id}', [TenantUserController::class, 'update'])->middleware('menuPermission:users,can_edit');
+        Route::delete('/users/{ids}', [TenantUserController::class, 'destroy'])->middleware('menuPermission:users,can_delete');
         Route::put('/profile/{id}', [TenantUserController::class, 'profileUpdate'])->name('profile.update');
         Route::post('/change-password', [TenantUserController::class, 'changePassword']);
         Route::post('/roles/{roleId}/permissions', [RoleController::class, 'updatePermissions']);
 
         // Add more tenant-specific routes
         Route::apiResource('menus', MenuController::class);
+        Route::get('role-menus/{roleId}', [MenuController::class, 'getMenuByRole']);
         Route::get('menu-permission/{id}', [MenuController::class, 'menuPermission']);
         Route::apiResource('roles', RoleController::class);
-        Route::apiResource('projects', ProjectController::class)->middleware([
-            'index' => 'menuPermission:projects,can_view',
-            'create' => 'menuPermission:projects,can_add',
-            'store' => 'menuPermission:projects,can_add',
-            'edit' => 'menuPermission:projects,can_edit',
-            'update' => 'menuPermission:projects,can_edit',
-            'destroy' => 'menuPermission:projects,can_delete',
-        ]);
+        Route::controller(ProjectController::class)->group(function () {
+            Route::get('projects', 'index')->middleware('menuPermission:project,can_view');
+            Route::post('projects', 'store')->middleware('menuPermission:project,can_add');
+            Route::get('projects/{project}', 'show')->middleware('menuPermission:project,can_view');
+            Route::put('projects/{project}', 'update')->middleware('menuPermission:project,can_edit');
+            Route::delete('projects/{project}', 'destroy')->middleware('menuPermission:project,can_delete');
+        });
     });
 });
 

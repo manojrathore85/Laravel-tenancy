@@ -18,7 +18,7 @@ class TenantUserController extends Controller
 {
     public function index(){
         try {
-            $users = TenantUser::all();
+            $users = TenantUser::with('roles')->get();
             return response()->json($users, 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -91,6 +91,7 @@ class TenantUserController extends Controller
         try {
             //$user = $request->user();
             $user = TenantUser::find(auth()->guard('tenant')->user()->id);
+            $user->assignedRoles = $user->getRoleNames();          
             $token = $user->createToken($user->email)->plainTextToken;
             return response()->json([
                 'status' => 'success', 

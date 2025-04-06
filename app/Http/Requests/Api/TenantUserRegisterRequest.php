@@ -25,7 +25,7 @@ class TenantUserRegisterRequest extends FormRequest
     {
         $userId = $this->route('id') ? $this->route('id') : null;
         $isProfileUpdate = $this->routeIs('profile.update');
-        $isRegister = $this->routeIs('register');
+        $isRegister = $this->routeIs('api.register');
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
