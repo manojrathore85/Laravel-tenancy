@@ -10,6 +10,9 @@ use App\Http\Controllers\Api\RegisteredUserController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\Tenant\TenantUserController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PlanController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,7 +26,9 @@ use App\Http\Controllers\Api\Tenant\TenantUserController;
 // Route::post('/login', function(){
 //     return "hello from api route";
 // });
-
+Route::post('/check-domain', [OrderController::class, 'checkDomain']);
+Route::apiResource('plans', PlanController::class)->only(['index', 'show']);
+Route::apiResource('orders', OrderController::class)->only(['store']);
 Route::group(['middeleware'=> 'api'],function (){
     Route::post('/register', [RegisteredUserController::class, 'store']);
     Route::post('/login',[AuthenticatedSessionController::class,'store'] ); 
@@ -36,7 +41,8 @@ Route::group(['middeleware'=> 'api'],function (){
         Route::post('/change-password', [ProfileController::class, 'changePassword']);
         Route::apiResource('tenants', TenantController::class);    
         Route::delete('tenants/{ids}', [TenantController::class, 'destroy']);
-
+        Route::apiResource('plans', PlanController::class)->only(['store', 'update', 'destroy']);      
+        Route::apiResource('orders', OrderController::class)->only(['index', 'update', 'destroy']);
     });
    
 });

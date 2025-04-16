@@ -25,7 +25,10 @@ return [
         'http://*.reactims.hpchft.local', 
 
         'http://reactims.hpchft.ai',
-        'http://*.reactims.hpchft.ai'
+        'http://*.reactims.hpchft.ai',
+
+        'http://laravelims.hpchft.ai/',
+        'http://*.laravelims.hpchft.ai/',
     ], // Allow subdomains
 
     'allowed_origins_patterns' => [

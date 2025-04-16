@@ -60,7 +60,7 @@ return [
 
     'asset_url' => env('ASSET_URL', '/'),
 
-    'domain' => env('APP_DOMAIN', 'laravelims.hpchft.ai'),
+    'domain' => env('APP_DOMAIN', 'reactims.hpchft.ai'),
 
     /*
     |--------------------------------------------------------------------------
