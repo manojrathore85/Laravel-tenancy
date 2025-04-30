@@ -4,13 +4,13 @@ then run  $tenant = \App\Models\Tenant::find('d2cfd2c7-54a4-4a9f-a300-909379de1c
 ten you can run the any if block mention below; 
 -->
 
-$tenant = \App\Models\Tenant::find('d2cfd2c7-54a4-4a9f-a300-909379de1cc9');
+$tenant = \App\Models\Tenant::find('a56d4e18-1af8-4485-8996-d392ca948c41');
 
 if ($tenant) {
     tenancy()->initialize($tenant);
 
     \Artisan::call('migrate', [
-        '--path' => 'database/migrations/tenant/2025_02_10_133148_create_menus_table.php',
+        '--path' => 'database/migrations/tenant/2025_04_17_173258_create_issues_table.php',
         '--force' => true,
     ]);
 
@@ -20,7 +20,7 @@ if ($tenant) {
 }
 
 <!-- call a seeder like this  -->
-if ($tenant) {
+<!-- if ($tenant) {
     tenancy()->initialize($tenant);
 
     \Artisan::call('db:seed', [
@@ -30,4 +30,7 @@ if ($tenant) {
     echo \Artisan::output();
 } else {
     echo "Tenant not found!";
-}
+} -->
+
+
+tenancy()->initialize(App\Models\Tenant::find('a56d4e18-1af8-4485-8996-d392ca948c41'));

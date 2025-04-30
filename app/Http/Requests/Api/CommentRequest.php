@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MenuRequest extends FormRequest
+class CommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,9 @@ class MenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=> ['required', 'string', 'min:3','max:100'],
-            'route'=> ['string', 'min:3','max:100'],
-            'component'=> ['string', 'min:3','max:100'],
-            'icon'=> ['string','min:3', 'max:100'],
-            //'drawer'=>[ 'in:0,1'],
-            //'main_menu'=> ['in:false,true']
+            'issue_id' => 'required|exists:issues,id',
+            'description' => 'required|string|max:5000',
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2 mb
         ];
     }
 }

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('icon')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('sort_order')->default(0)->nullable();         
+            $table->integer('drawer')->default(0)->nullable();         
+            $table->integer('main_menu')->default(0)->nullable();         
             $table->timestamps();
         });
     }

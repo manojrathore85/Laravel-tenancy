@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
 use App\Models\Order;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -83,9 +84,20 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
+    public function update(OrderRequest $request, Order $order)
     {
-        //
+        try {
+            $order->update($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order updated successfully',      
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -125,5 +137,39 @@ class OrderController extends Controller
             ->exists();
     
         return response()->json(['exists' => $exists]);
+    }
+    public function status(OrderRequest $request, $id)
+    {
+        try {
+            DB::beginTransaction(); //
+            $order = Order::find($id);
+            $order->status = $request->status;
+            $order->save();
+            $message = "Order Status Updated Successfully";
+            if($order->status == 1) {
+                $tenant = Tenant::create([
+                    'name' => $order->name,
+                    'email' => $order->email,
+                    'password' => $order->password,
+                    'domain_name' => $order->domain,
+                    'phone' => $order->phone
+                ]);
+                $tenant->domains()->create([
+                    'domain' => $order->domain.'.'.config('app.domain'),
+                ]);
+                $message = "Order Status Updated Successfully, Tenant Created Successfully";
+            }
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => $message,
+            ], 200);    
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'fail',
+                'message' => $th->getMessage(),
+            ]);
+        }
     }
 }

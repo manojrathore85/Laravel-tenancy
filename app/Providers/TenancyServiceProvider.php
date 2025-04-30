@@ -29,6 +29,7 @@ class TenancyServiceProvider extends ServiceProvider
                     Jobs\MigrateDatabase::class,
                     Jobs\SeedDatabase::class,
                     \App\Jobs\SeedTenantJob::class,
+                    \App\Jobs\CreateFrameworkDirectoriesForTenant ::class, // this Jow is creating directory for tenant storage and aslo create symbolic link
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!

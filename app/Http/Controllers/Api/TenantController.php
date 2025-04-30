@@ -139,4 +139,26 @@ class TenantController extends Controller
         }  
         
     }
+    public function getTenantByDomain($domain)
+    {
+        try {
+            
+            $tenant = Tenant::with('domains')->whereHas('domains', function ($query) use ($domain) {
+                $query->where('domain', $domain);
+            })->toSql();
+            print_r($tenant);
+            $message = $tenant ? "Tenant Found" : "Tenant Not Found";
+            return response()->json([
+                'status' => 'success',
+                'tenant' => $tenant,
+                'message' => $message,              
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),              
+            ], 500);
+        }
+    }
+ 
 }

@@ -37,7 +37,7 @@ class MenuController extends Controller
     public function store(MenuRequest $request)
     {
         try {
-
+          // return( json_encode($request->all()));
             $menu = Menu::create($request->all());
             return response()->json([
                 'status' => 'success',

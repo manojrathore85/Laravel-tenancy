@@ -29,6 +29,8 @@ use App\Http\Controllers\PlanController;
 Route::post('/check-domain', [OrderController::class, 'checkDomain']);
 Route::apiResource('plans', PlanController::class)->only(['index', 'show']);
 Route::apiResource('orders', OrderController::class)->only(['store']);
+Route::post('/tenants/{domain}', [TenantController::class, 'getTenantByDomain']);
+
 Route::group(['middeleware'=> 'api'],function (){
     Route::post('/register', [RegisteredUserController::class, 'store']);
     Route::post('/login',[AuthenticatedSessionController::class,'store'] ); 
@@ -43,6 +45,7 @@ Route::group(['middeleware'=> 'api'],function (){
         Route::delete('tenants/{ids}', [TenantController::class, 'destroy']);
         Route::apiResource('plans', PlanController::class)->only(['store', 'update', 'destroy']);      
         Route::apiResource('orders', OrderController::class)->only(['index', 'update', 'destroy']);
+        Route::post('orders/{id}/status',[ OrderController::class, 'status']);
     });
    
 });
