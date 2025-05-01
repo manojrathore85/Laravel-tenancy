@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreign('issue_id')->references('id')->on('issues')->onDelete('cascade');
             $table->unsignedBigInteger('comment_by');
             $table->foreign('comment_by')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('update_by');
-            $table->foreign('update_by')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('update_by')->default(0)->nullable();
+           // $table->foreign('update_by')->references('id')->on('users')->onDelete('cascade');
             $table->text('description');
             $table->string('attachment', 255)->nullable();
             $table->timestamps();
