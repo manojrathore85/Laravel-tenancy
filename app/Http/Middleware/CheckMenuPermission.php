@@ -22,19 +22,33 @@ class CheckMenuPermission
         
         $user = Auth::user();
         if (!$user) {
-            abort(403, 'User Not authticated');
+            abort(401, 'User Not authticated');
         }
+        //Treat user id 1 as super admin
+        if ($user && $user->is_super_admin === 1) {
+            return $next($request);
+        }
+        // check project context set or not and get role for the project 
+        if(!$request->hasHeader('X-Login-Project-ID')) {
+            abort(461, 'Project Context Not Found');
+        }
+        // else {
+        //     $project_id = $request->header('X-Login-Project-ID');
+        //     $hasRole = $user->getRoleForProject($project_id);
+        //     if (!$hasRole){
+        //         abort(403, 'Unauthorized For Project: '.$project_id);
+        //     }
+        // }
 
         // Fetch menu by slug
         $menuRecord = Menu::where('route', $menu)->first();
         if (!$menuRecord) {
-            abort(404, 'Menu: '.$menu. ' not found');
+            abort(462, 'Menu: '.$menu. ' not found');
         }
-        if(!$user->roles->first()){
-            abort(404, 'User: '.$user->name. 'Role not found');
-        };
+        
+
         // Check permission in role_menu_permissions table
-        $hasPermission = RoleMenuPermission::where('role_id', $user->roles->first()->id)
+        $hasPermission = RoleMenuPermission::where('role_id', $request->user()->role->id)
             ->where('menu_id', $menuRecord->id)
             ->where($action, true)
             ->exists();

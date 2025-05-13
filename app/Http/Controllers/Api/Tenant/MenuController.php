@@ -165,9 +165,13 @@ class MenuController extends Controller
         }
     }
 
-    public function getMenuByRole($roleId)
+    public function getMenuByRole(Request $request)
     {
         try {
+            if($request->user()->is_super_admin){
+                return response()->json(Menu::all(), 200);
+            }
+            $roleId = $request->user()->role->id;
             $menus = Menu::with(['parent:id,name', 'roleMenuPermissions'])
                 ->whereHas('roleMenuPermissions', function ($query) use ($roleId) {
                     $query->where(function ($q) {
@@ -180,7 +184,7 @@ class MenuController extends Controller
                     ->where('role_id', $roleId);
                     })               
                 ->get();
-            
+                        
             return response()->json($menus, 200);
         } catch (\Throwable $th) {
             return response()->json([

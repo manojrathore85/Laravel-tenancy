@@ -53,6 +53,7 @@ class TenantUserController extends Controller
     }
     public function store(TenantUserRegisterRequest $request){
     
+        //return response()->json($request);    
         try {  
            // DB::beginTransaction(); //
             $user = TenantUser::create([
@@ -61,6 +62,7 @@ class TenantUserController extends Controller
                 'password' =>$request->password,
                 'gender' => $request->gender,
                 'phone' => $request->phone,
+                'is_super_admin' => $request->is_super_admin,
             ]);
             $user->assignRole($request->role);
             //$user->assignRole('user');
@@ -91,7 +93,13 @@ class TenantUserController extends Controller
         try {
             //$user = $request->user();
             $user = TenantUser::find(auth()->guard('tenant')->user()->id);
-            $user->assignedRoles = $user->getRoleNames();          
+        
+            //$user->assignedRoles = $user->getRoleNames(); 
+            $assignedProjects = $user->assigned_projects; 
+            if(!empty($assignedProjects->toArray())) {
+                $user->assigned_projects = $assignedProjects;  
+                $user->loginProjectId = $assignedProjects[0]->id;   
+            }
             $token = $user->createToken($user->email)->plainTextToken;
             return response()->json([
                 'status' => 'success', 
@@ -207,6 +215,35 @@ class TenantUserController extends Controller
                 'message' => $th->getMessage(),              
             ], 500);
         }
+    }
+    public function uppdateProfileImage(string $id, Request $request){
+        $request->validate([
+           'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+        ]);
+        try {
+            $data = $request->all();
+          
+            $user = TenantUser::find($id);            
+            if ($request->hasFile('profile_image')) {               
+                $file = $request->file('profile_image');
+                $path = $file->store('User', 'public');             
+                $data['profile_image'] = $path;               
+            }
+            $user->update($data);
+
+            $updatedUser = TenantUser::find($id);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Profile Image updated successfully',
+                'data'=>$updatedUser
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+     
     }
   }
 

@@ -43,6 +43,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             // \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+          
         ],
     ];
 
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\RoleMiddleware::class,      
         'detectTenant' => \App\Http\Middleware\DetectTenant::class,       
         'menuPermission' => \App\Http\Middleware\CheckMenuPermission::class,
+        'projectContext' => \App\Http\Middleware\ProjectContext::class,
         
     ];
 }

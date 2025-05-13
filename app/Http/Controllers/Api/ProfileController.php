@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class ProfileController extends Controller
@@ -87,5 +87,34 @@ class ProfileController extends Controller
                 'message' => $th->getMessage(),              
             ], 500);
         }
+    }
+    public function uppdateProfileImage(string $id, Request $request){
+        $request->validate([
+           'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+        ]);
+        try {
+            $data = $request->all();
+          
+            $user = User::find($id);            
+            if ($request->hasFile('profile_image')) {               
+                $file = $request->file('profile_image');
+                $path = $file->store('User', 'public');             
+                $data['profile_image'] = $path;               
+            }
+            $user->update($data);
+
+            $updatedUser = User::find($id);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Profile Image updated successfully',
+                'data'=>$updatedUser
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+     
     }
 }

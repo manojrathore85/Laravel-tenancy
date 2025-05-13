@@ -38,21 +38,28 @@ Route::middleware([
         return response()->json(['error' => 'Tenant not identified'], 404);
     });
     // Protected routes for tenants
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'projectContext'])->group(function () {
+        //Route for dropdown data 
+        Route::prefix('dropdowns')->group(function () {
+            Route::get('/users', [TenantUserController::class, 'index']);
+            Route::get('/projects', [ProjectController::class, 'index']);          
+        });
         Route::get('/users', [TenantUserController::class, 'index'])->middleware('menuPermission:users,can_view');
         Route::post('/users', [TenantUserController::class, 'store'])->middleware('menuPermission:users,can_add');
         Route::get('/users/{id}', [TenantUserController::class, 'show'])->middleware('menuPermission:users,can_view');
         Route::put('/users/{id}', [TenantUserController::class, 'update'])->middleware('menuPermission:users,can_edit');
         Route::delete('/users/{ids}', [TenantUserController::class, 'destroy'])->middleware('menuPermission:users,can_delete');
+        Route::get('/profile/{id}', [TenantUserController::class, 'show']);
         Route::put('/profile/{id}', [TenantUserController::class, 'profileUpdate'])->name('profile.update');
+        Route::post('/profile/{id}/profileImage', [TenantUserController::class, 'uppdateProfileImage']);
         Route::post('/change-password', [TenantUserController::class, 'changePassword']);
         Route::get('/roles', [RoleController::class, 'index']);
-        Route::post('/roles/{roleId}/permissions', [RoleController::class, 'updatePermissions']);
-      
+        Route::post('/roles/{roleId}/permissions', [RoleController::class, 'updatePermissions']);   
+
 
         // Add more tenant-specific routes
         Route::apiResource('menus', MenuController::class);
-        Route::get('role-menus/{roleId}', [MenuController::class, 'getMenuByRole']);
+        Route::get('role-menus', [MenuController::class, 'getMenuByRole']);
         Route::get('menu-permission/{id}', [MenuController::class, 'menuPermission']);
        
        
@@ -62,6 +69,8 @@ Route::middleware([
             Route::get('projects/{project}', 'show')->middleware('menuPermission:project,can_view');
             Route::put('projects/{project}', 'update')->middleware('menuPermission:project,can_edit');
             Route::delete('projects/{project}', 'destroy')->middleware('menuPermission:project,can_delete');
+            Route::get('projects/{project}/assigned-users', 'getAssignedUsers')->middleware('menuPermission:project,can_view');
+            Route::post('assign-users', 'assignUsers')->middleware('menuPermission:project,can_add');
         });
         Route::controller(IssueController::class)->group(function () {
             Route::get('issues', 'index')->middleware('menuPermission:issues,can_view');
@@ -80,6 +89,9 @@ Route::middleware([
             Route::post('comments/{comments}/removeAttachment', 'removeAttachment')->middleware('menuPermission:comments,can_edit');
             Route::get('issues/{issue}/getComments', 'getIssueComments')->middleware('menuPermission:issues,can_view');
         });
+
+
+        
     });
 });
 

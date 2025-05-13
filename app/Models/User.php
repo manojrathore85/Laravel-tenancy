@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use DateTimeInterface;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\NewAccessToken;
 
 class User extends Authenticatable
@@ -27,6 +28,7 @@ class User extends Authenticatable
         'gender',
         'phone',
         'status',
+        'profile_image'
     ];
 
     /**
@@ -76,6 +78,18 @@ class User extends Authenticatable
             //return new NewAccessToken($existingToken, $existingToken->getKey().'|'.$existingToken->token);
         }
         return $this->createToken($name, $abilities, $expiresAt);
+    }
+
+    protected $appends = ['profile_image_url'];
+
+    public function getProfileImageUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return url(Storage::url($this->profile_image));
+        }
+
+        // fallback image or null
+        return url('/images/default-avatar.png'); 
     }
 
 }

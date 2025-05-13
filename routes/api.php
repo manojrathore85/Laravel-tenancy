@@ -39,6 +39,7 @@ Route::group(['middeleware'=> 'api'],function (){
         Route::apiResource('users', UserController::class);
         Route::get('/profile/{id}', [ProfileController::class, 'edit']);
         Route::patch('/profile/{id}', [ProfileController::class, 'update']);
+        Route::post('/profile/{id}/profileImage', [ProfileController::class, 'uppdateProfileImage']);
         Route::delete('/profile/{id}', [ProfileController::class, 'destroy']);
         Route::post('/change-password', [ProfileController::class, 'changePassword']);
         Route::apiResource('tenants', TenantController::class);    

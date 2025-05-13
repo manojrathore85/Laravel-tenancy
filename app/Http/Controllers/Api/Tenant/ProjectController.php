@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenant\Project;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\ProjectRequest;
+use App\Models\Tenant\UserHasProject;
+use App\Models\Tenant\User;
 
 class ProjectController extends Controller
 {
@@ -14,8 +16,14 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        try {
-            $projects = Project::all();
+        try {   
+            $user = auth()->user();
+
+            if ($user->is_super_admin === 1) {
+                return Project::all();
+            }
+
+            $projects = User::find(auth()->user()->id)->projects()->get();
             return response()->json($projects, 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -115,6 +123,55 @@ class ProjectController extends Controller
                 'status' => 'success',
                 'message' => 'Project Updated successfully',
             ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+    public function assignUsers(Request $request){
+        $validated = $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*.user_id' => 'required|integer|exists:users,id',
+            'user_ids.*.role_id' => 'nullable|integer',
+            'project_id' => 'required|integer|exists:projects,id',
+        ]);
+    
+        try {
+            $project = Project::findOrFail($request->project_id);
+    
+            $syncData = [];
+    
+            foreach ($request->user_ids as $user) {
+                $syncData[$user['user_id']] = [
+                    'role_id' => $user['role_id'],
+                    'created_by' => auth()->id(),     // optional: use your logic
+                    'updated_by' => auth()->id(),
+                ];
+            }
+    
+            $project->users()->sync($syncData);
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Users assigned successfully.',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+    public function getAssignedUsers(string $projectId) {
+        try {
+            $assignedUsers =UserHasProject::select('user_id', 'role_id')->where('project_id', $projectId)->get();
+          
+            return response()->json([
+                'status' => 'success',
+                'data' => $assignedUsers,
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',

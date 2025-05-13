@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -26,6 +28,9 @@ class User extends Authenticatable
         'password',
         'phone',
         'status',
+        'profile_image',
+        'is_super_admin',
+        'assigned_projects',
     ];
 
     /**
@@ -51,4 +56,30 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = Hash::make($value);
     }
+    protected $appends = ['profile_image_url'];
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'user_has_project', 'user_id', 'project_id')
+                    ->withTimestamps();
+    }
+    public function getProfileImageUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return url("tenant".tenant('id')."/".$this->profile_image);
+        }
+        // fallback image or null
+        return url('/images/default-avatar.png'); 
+    }
+    public function getRoleForProject(string $projectId) {
+        return $this->hasMany(UserHasProject::class, 'user_id', 'id')->where('project_id', $projectId)->first();
+    }
+    public function getAssignedProjectsAttribute()
+    {
+        if ($this->is_super_admin) {
+            return Project::all();
+        }
+    
+        return $this->projects;
+    }  
+
 }
