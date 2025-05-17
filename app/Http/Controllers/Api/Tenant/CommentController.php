@@ -8,6 +8,7 @@ use App\Models\Tenant\Issue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
+use App\Notifications\IssueCommentedNotification;
 
 class CommentController extends Controller
 {
@@ -55,8 +56,17 @@ class CommentController extends Controller
                 $path = $file->store('comments','public');
                 $data['attachment'] = $path;
             }
-            $data['comment_by'] = auth()->user()->id;            
-            Comment::create($data);
+            $data['comment_by'] = auth()->user()->id;      
+            $issue = Issue::find($data['issue_id']);
+            $comment = Comment::create($data);      
+            
+
+            // Notify subscribers
+            foreach ($issue->subscribers as $user) {
+                if ($user->id !== auth()->id()) {
+                    $user->notify(new IssueCommentedNotification($issue, $comment));
+                }
+            }
             return response()->json([
                 'status' => 'success',
                 'message' => 'Comment added successfully',

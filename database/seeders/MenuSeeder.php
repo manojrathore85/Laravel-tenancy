@@ -27,26 +27,26 @@ class MenuSeeder extends Seeder
                     'drawer' => 1,
                     'main_menu' => 1
                 ],
-                [
-                    'name' => 'User',
-                    'route' => 'users',
-                    'component' => 'TenantUser',
-                    'icon' => 'user-icon',
-                    'parent_id' => 1, // Use null instead of empty string for better DB compatibility
-                    'sort_order' => 1,
-                    'drawer' => 1,
-                    'main_menu' => 1
-                ],
-                [
-                    'name' => 'Permission',
-                    'route' => 'menu-permission',
-                    'component' => 'Permission',
-                    'icon' => 'permission-icon',
-                    'parent_id' => 1,
-                    'sort_order' => 2,
-                    'drawer' => 1,
-                    'main_menu' => 1
-                ],
+                // [
+                //     'name' => 'User',
+                //     'route' => 'users',
+                //     'component' => 'TenantUser',
+                //     'icon' => 'user-icon',
+                //     'parent_id' => 1, // Use null instead of empty string for better DB compatibility
+                //     'sort_order' => 1,
+                //     'drawer' => 1,
+                //     'main_menu' => 1
+                // ],
+                // [
+                //     'name' => 'Permission',
+                //     'route' => 'menu-permission',
+                //     'component' => 'Permission',
+                //     'icon' => 'permission-icon',
+                //     'parent_id' => 1,
+                //     'sort_order' => 2,
+                //     'drawer' => 1,
+                //     'main_menu' => 1
+                // ],
                 [
                     'name' => 'Project',
                     'route' => 'project',
@@ -62,8 +62,8 @@ class MenuSeeder extends Seeder
                     'route' => 'issues',
                     'component' => 'Issues',
                     'icon' => 'HiTicket',
-                    'parent_id' => 1,
-                    'sort_order' => 4,
+                    'parent_id' => 0,
+                    'sort_order' => 1,
                     'drawer' => 1,
                     'main_menu' => 1
                 ],
@@ -72,8 +72,8 @@ class MenuSeeder extends Seeder
                     'route' => 'comments',
                     'component' => 'comments-icon',
                     'icon' => 'HiTicket',
-                    'parent_id' => 1,
-                    'sort_order' => 4,
+                    'parent_id' => 0,
+                    'sort_order' => 2,
                     'drawer' => 0,
                     'main_menu' => 0
                 ],

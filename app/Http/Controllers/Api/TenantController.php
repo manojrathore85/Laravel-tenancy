@@ -24,6 +24,7 @@ class TenantController extends Controller
                 'phone' => $tenant->phone,
                 'created_at' => $tenant->created_at->format('d M Y h:i A'),
                 'domains' => $tenant->domains->pluck('domain')->implode(', '),
+                'frontend_url' => $tenant->domains->pluck('frontend_url')->implode(', '),
             ];
         });
         return $tenantsWithCommaSeparatedDomains;
@@ -54,7 +55,8 @@ class TenantController extends Controller
         try {
             $tenant = Tenant::create($validatedData);
             $tenant->domains()->create([
-                'domain' => $validatedData['domain_name'].'.'.config('app.domain'),
+                'domain' => $validatedData['domain_name'].'.'.config('app.backend_base_domain'),
+                'frontend_url' => $validatedData['domain_name'].'.'.config('app.frontend_base_domain'),
             ]);
             return response()->json([
                 'status' => 'success',
@@ -82,7 +84,7 @@ class TenantController extends Controller
     {
         $tenant = Tenant::with('domains')->find($id);
         $domain = $tenant->domains->first()->domain;
-        $replaceString = ".".config('app.domain');
+        $replaceString = ".".config('app.backend_base_domain');
         $tenant->domain = str_replace($replaceString, '', $domain);
         return $tenant;
     }
@@ -96,7 +98,8 @@ class TenantController extends Controller
             $tenant = Tenant::find($request->id);
             $tenant->update($request->except('id', 'email'));
             $domain = $tenant->domains()->first();
-            $domain->domain = $request->domain_name.'.'.config('app.domain');
+            $domain->domain = $request->domain_name.'.'.config('app.backend_base_domain');
+            $domain->frontend_url = $request->domain_name.'.'.config('app.frontend_base_domain');
             $domain->save();
             return response()->json([
                 'status' => 'success',

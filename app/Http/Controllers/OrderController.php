@@ -133,7 +133,7 @@ class OrderController extends Controller
             'domain' => 'required|string',
         ]);        
         $exists = DB::table('domains')
-            ->where('domain', $request->domain.'.'.config('app.domain'))
+            ->where('domain', $request->domain.'.'.config('app.backend_base_domain'))
             ->exists();
     
         return response()->json(['exists' => $exists]);
@@ -154,8 +154,10 @@ class OrderController extends Controller
                     'domain_name' => $order->domain,
                     'phone' => $order->phone
                 ]);
+                \Log::info('app domain name is'.config('app.backend_base_domain'));
                 $tenant->domains()->create([
-                    'domain' => $order->domain.'.'.config('app.domain'),
+                    'domain' => $order->domain.'.'.config('app.backend_base_domain'),
+                    'frontend_url' => $order->domain.'.'.config('app.frontend_base_domain'),
                 ]);
                 $message = "Order Status Updated Successfully, Tenant Created Successfully";
             }
@@ -165,6 +167,7 @@ class OrderController extends Controller
                 'message' => $message,
             ], 200);    
         } catch (\Throwable $th) {
+            \Log::error($th);
             DB::rollBack();
             return response()->json([
                 'status' => 'fail',

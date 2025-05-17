@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\Tenant\RoleMenuPermission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
@@ -106,6 +107,55 @@ class RoleController extends Controller
             'message' => 'Permission updated successfully',
             'data' => $permission,
         ]);
+    }
+
+    public function updateBulkPermissions(Request $request, $roleId)
+    {
+        $request->validate([
+            '*.menu_id' => 'required|exists:menus,id',
+            '*.can_add' => 'required|boolean',
+            '*.can_edit' => 'required|boolean',
+            '*.can_delete' => 'required|boolean',
+            '*.can_view' => 'required|boolean',
+        ]);
+        
+        $data = $request->all();
+
+        DB::beginTransaction();
+    
+        try {
+            foreach ($data as $permission) {
+                // Validate required fields
+                if (!isset($permission['menu_id'])) {
+                    continue;
+                }
+    
+                RoleMenuPermission::updateOrCreate(
+                    [
+                        'role_id' => $roleId,
+                        'menu_id' => $permission['menu_id'],
+                    ],
+                    [
+                        'can_add' => $permission['can_add'] ?? false,
+                        'can_edit' => $permission['can_edit'] ?? false,
+                        'can_delete' => $permission['can_delete'] ?? false,
+                        'can_view' => $permission['can_view'] ?? false,
+                    ]
+                );
+            }
+    
+            DB::commit();
+    
+            return response()->json([
+                'message' => 'Permissions updated successfully.',
+                'data' => $data
+                ], 200);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Error updating permissions.', 'error' => $e->getMessage()], 500);
+        }
+        
     }
 
 }

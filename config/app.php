@@ -57,10 +57,13 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
     
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+    'frontend_domain' => env('FRONTEND_DOMAIN', 'localhost:3000'),
 
     'asset_url' => env('ASSET_URL', '/'),
 
-    'domain' => env('APP_DOMAIN', 'reactims.hpchft.ai'),
+    'backend_base_domain' => env('BACKEND_BASE_DOMAIN', 'reactims.hpchft.ai'),
+    'frontend_base_domain' => env('FRONTEND_BASE_DOMAIN', 'reactims.hpchft.ai'),
+    'tenant_protocol' => env('TENANT_URL_PROTOCOL', 'http'),
 
     /*
     |--------------------------------------------------------------------------

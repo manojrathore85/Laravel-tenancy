@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Api\TenantUserRegisterRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Models\Tenant;
+use App\Models\Tenant\Project;
 use App\Models\Tenant\User as TenantUser;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -95,7 +96,11 @@ class TenantUserController extends Controller
             $user = TenantUser::find(auth()->guard('tenant')->user()->id);
         
             //$user->assignedRoles = $user->getRoleNames(); 
-            $assignedProjects = $user->assigned_projects; 
+            if($user->is_super_admin){
+                $assignedProjects = Project::all();
+            }else{
+                $assignedProjects = $user->assigned_projects; 
+            }
             if(!empty($assignedProjects->toArray())) {
                 $user->assigned_projects = $assignedProjects;  
                 $user->loginProjectId = $assignedProjects[0]->id;   
@@ -244,6 +249,18 @@ class TenantUserController extends Controller
             ], 500);
         }
      
+    }
+    public function getUsersByProject(Project $project){
+        try {
+            $users = $project->users()->with('roles')->get();
+            //$users = TenantUser::with('roles')->get();
+            return response()->json($users, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => $th->getMessage(),                
+            ], 500);
+        }
     }
   }
 

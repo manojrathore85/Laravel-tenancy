@@ -29,7 +29,7 @@ class CheckMenuPermission
             return $next($request);
         }
         // check project context set or not and get role for the project 
-        if(!$request->hasHeader('X-Login-Project-ID')) {
+        if(!$request->hasHeader('x-login-project-id')) {
             abort(461, 'Project Context Not Found');
         }
         // else {

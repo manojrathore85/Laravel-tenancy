@@ -22,6 +22,13 @@ Route::middleware([
     // Route::get('/tenant-test-route', function () {
     //     return response()->json(['message' => 'Tenant API is working!']);
     // });
+    // Route::get('/test-notify', function () {
+    //     $issue = \App\Models\Tenant\Issue::first();
+    //     $user = \App\Models\Tenant\User::first();
+    //     $user->notify(new \App\Notifications\IssueUpdatedNotification($issue));
+    
+    //     return 'Notification sent';
+    // });
 
      // Tenant-specific authentication
     Route::post('/login', [TenantUserController::class, 'login']);
@@ -41,7 +48,7 @@ Route::middleware([
     Route::middleware(['auth:sanctum', 'projectContext'])->group(function () {
         //Route for dropdown data 
         Route::prefix('dropdowns')->group(function () {
-            Route::get('/users', [TenantUserController::class, 'index']);
+            Route::get('/users/{project}', [TenantUserController::class, 'getUsersByProject']);
             Route::get('/projects', [ProjectController::class, 'index']);          
         });
         Route::get('/users', [TenantUserController::class, 'index'])->middleware('menuPermission:users,can_view');
@@ -55,6 +62,7 @@ Route::middleware([
         Route::post('/change-password', [TenantUserController::class, 'changePassword']);
         Route::get('/roles', [RoleController::class, 'index']);
         Route::post('/roles/{roleId}/permissions', [RoleController::class, 'updatePermissions']);   
+        Route::post('/roles/{roleId}/bulk-permissions', [RoleController::class, 'updateBulkPermissions']);   
 
 
         // Add more tenant-specific routes
@@ -79,6 +87,8 @@ Route::middleware([
             Route::put('issues/{issues}', 'update')->middleware('menuPermission:issues,can_edit');
             Route::delete('issues/{issues}', 'destroy')->middleware('menuPermission:issues,can_delete');
             Route::post('issues/{issues}/removeAttachment', 'removeAttachment')->middleware('menuPermission:issues,can_edit');
+            Route::post('issues/{issue}/subscribe', 'subscribe');
+            Route::post('issues/{issue}/unsubscribe', 'unsubscribe');
         });
         Route::controller(CommentController::class)->group(function () {
             Route::get('comments', 'index')->middleware('menuPermission:comments,can_view');
@@ -89,6 +99,10 @@ Route::middleware([
             Route::post('comments/{comments}/removeAttachment', 'removeAttachment')->middleware('menuPermission:comments,can_edit');
             Route::get('issues/{issue}/getComments', 'getIssueComments')->middleware('menuPermission:issues,can_view');
         });
+
+       
+
+
 
 
         

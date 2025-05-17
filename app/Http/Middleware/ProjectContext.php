@@ -23,19 +23,22 @@ class ProjectContext
         // dd($request->user()->assigned_projects->toArray());
         if(!$request->user()->assigned_projects->toArray()){
             abort(461, 'You dont have any assigned projects');
-        }
-        if(!$request->hasHeader('X-Login-Project-ID') || empty($request->header('X-Login-Project-ID'))) {
+        }        
+        if(!$request->hasHeader('x-login-project-id') || empty($request->header('x-login-project-id'))) {
             abort(462, 'Project Context Not Found from project context');
         }
 
         else{
-            $project_id = $request->header('X-Login-Project-ID');
+            $project_id = $request->header('x-login-project-id');
             $userHashProject = $request->user()->getRoleForProject($project_id);           
-            if (!$userHashProject->role){
-                abort(403, 'Unauthorized For Project: '.$project_id);
+            if ($userHashProject) {
+                if (!$userHashProject->role) {
+                    abort(403, 'Unauthorized For Project: ' . $project_id);
+                }
+                $request->user()->role = $userHashProject->role;
+            } else {
+                abort(403, 'Unauthorized For Project: ' . $project_id);
             }
-            
-            $request->user()->role = $userHashProject->role;
         }
         
         

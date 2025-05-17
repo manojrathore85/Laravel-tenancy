@@ -81,5 +81,8 @@ class User extends Authenticatable
     
         return $this->projects;
     }  
-
+    public function subscribedIssues()
+    {
+        return $this->belongsToMany(Issue::class, 'issue_subscriptions')->withTimestamps();
+    }
 }
