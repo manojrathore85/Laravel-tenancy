@@ -54,7 +54,7 @@ class TenantUserController extends Controller
     }
     public function store(TenantUserRegisterRequest $request){
     
-        //return response()->json($request);    
+        //return response()->json($request->timezone);    
         try {  
            // DB::beginTransaction(); //
             $user = TenantUser::create([
@@ -64,6 +64,7 @@ class TenantUserController extends Controller
                 'gender' => $request->gender,
                 'phone' => $request->phone,
                 'is_super_admin' => $request->is_super_admin,
+                'timezone' => $request->timezone,
             ]);
             $user->assignRole($request->role);
             //$user->assignRole('user');

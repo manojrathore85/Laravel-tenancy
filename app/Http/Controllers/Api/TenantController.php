@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use DateTimeZone;
 use Illuminate\Support\Facades\Validator;
 class TenantController extends Controller
 {
@@ -162,6 +163,10 @@ class TenantController extends Controller
                 'message' => $th->getMessage(),              
             ], 500);
         }
+    }
+
+    public function getTimeZone(){
+        return response()->json(\DateTimeZone::listIdentifiers(DateTimeZone::ALL), 200);
     }
  
 }

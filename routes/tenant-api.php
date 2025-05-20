@@ -50,6 +50,7 @@ Route::middleware([
         Route::prefix('dropdowns')->group(function () {
             Route::get('/users/{project}', [TenantUserController::class, 'getUsersByProject']);
             Route::get('/projects', [ProjectController::class, 'index']);          
+            Route::get('/timezones', [TenantController::class, 'getTimeZone']);          
         });
         Route::get('/users', [TenantUserController::class, 'index'])->middleware('menuPermission:users,can_view');
         Route::post('/users', [TenantUserController::class, 'store'])->middleware('menuPermission:users,can_add');

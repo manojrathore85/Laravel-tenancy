@@ -64,6 +64,7 @@ return [
     'backend_base_domain' => env('BACKEND_BASE_DOMAIN', 'reactims.hpchft.ai'),
     'frontend_base_domain' => env('FRONTEND_BASE_DOMAIN', 'reactims.hpchft.ai'),
     'tenant_protocol' => env('TENANT_URL_PROTOCOL', 'http'),
+    'date_display_format' => env('DATE_DISPLAY_FORMAT', 'd-m-Y H:i:s T'),
 
     /*
     |--------------------------------------------------------------------------

@@ -49,7 +49,17 @@ class IssueController extends Controller
                 ->orWhere('issues.assigned_to', auth()->user()->id)
                 ->orderBy('issues.created_at', 'desc')
 
-                ->get();
+                ->get()
+                 ->map(function ($issue) {
+                    $timezone = auth()->user()->timezone ?? 'UTC';
+                    $issue->created_at = \Carbon\Carbon::parse($issue->created_at)
+                        ->timezone($timezone)
+                        ->format('Y-m-d H:i:s T');
+                    $issue->updated_at = \Carbon\Carbon::parse($issue->updated_at)
+                        ->timezone($timezone)
+                        ->format('Y-m-d H:i:s T');
+                    return $issue;
+                });
             return response()->json($issues, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);

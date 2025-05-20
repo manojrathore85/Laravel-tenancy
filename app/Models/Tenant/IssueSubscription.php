@@ -3,9 +3,9 @@
 namespace App\Models\Tenant;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Tenant\BaseModel;
 
-class IssueSubscription extends Model
+class IssueSubscription extends BaseModel
 {
     use HasFactory;
     protected $guarded = ['id'];

@@ -27,5 +27,15 @@ class UserHasProject extends Model
     {
         return $this->belongsTo(Role::class);
     }
+    public function getCreatedAtAttribute($value)
+    {
+        $timezone = auth()->user()->timezone ?? 'UTC';
+        return \Carbon\Carbon::parse($value)->timezone($timezone)->format('Y-m-d H:i:s T');
+    }
 
+    public function getUpdatedAtAttribute($value)
+    {
+        $timezone = auth()->user()->timezone ?? 'UTC';
+        return \Carbon\Carbon::parse($value)->timezone($timezone)->format('Y-m-d H:i:s T');
+    }
 }

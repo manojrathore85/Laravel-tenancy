@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('profile_image')->nullable();
             $table->tinyInteger('is_super_admin')->default(0)->nullable();
+            $table->string('timezone')->nullable()->default('UTC');
             $table->string('status')->default(0); // 0 = active, 1 = inactive
             $table->rememberToken();
             $table->timestamps();

@@ -3,9 +3,9 @@
 namespace App\Models\Tenant;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Tenant\BaseModel;
 
-class Issue extends Model
+class Issue extends BaseModel
 {
     use HasFactory;
 
@@ -20,15 +20,6 @@ class Issue extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    public function getUpdatesToAttribute($value)
-    {
-        return $value ? explode(',', $value) : [];
-    }
-
-    public function setUpdatesToAttribute($value)
-    {
-        $this->attributes['update_to'] = implode(',', $value);
-    }
     public function subscribers()
     {
         return $this->belongsToMany(User::class, 'issue_subscriptions')->withTimestamps();

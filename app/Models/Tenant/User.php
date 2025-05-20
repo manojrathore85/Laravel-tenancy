@@ -31,6 +31,7 @@ class User extends Authenticatable
         'profile_image',
         'is_super_admin',
         'assigned_projects',
+        'timezone',
     ];
 
     /**
@@ -51,7 +52,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
     protected function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
@@ -60,17 +61,18 @@ class User extends Authenticatable
     public function projects()
     {
         return $this->belongsToMany(Project::class, 'user_has_project', 'user_id', 'project_id')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
     public function getProfileImageUrlAttribute()
     {
         if ($this->profile_image) {
-            return url("tenant".tenant('id')."/".$this->profile_image);
+            return url("tenant" . tenant('id') . "/" . $this->profile_image);
         }
         // fallback image or null
-        return url('/images/default-avatar.png'); 
+        return url('/images/default-avatar.png');
     }
-    public function getRoleForProject(string $projectId) {
+    public function getRoleForProject(string $projectId)
+    {
         return $this->hasMany(UserHasProject::class, 'user_id', 'id')->where('project_id', $projectId)->first();
     }
     public function getAssignedProjectsAttribute()
@@ -78,11 +80,22 @@ class User extends Authenticatable
         if ($this->is_super_admin) {
             return Project::all();
         }
-    
+
         return $this->projects;
-    }  
+    }
     public function subscribedIssues()
     {
         return $this->belongsToMany(Issue::class, 'issue_subscriptions')->withTimestamps();
+    }
+    public function getCreatedAtAttribute($value)
+    {
+        $timezone = auth()->user()->timezone ?? 'UTC';
+        return \Carbon\Carbon::parse($value)->timezone($timezone)->format('Y-m-d H:i:s T');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        $timezone = auth()->user()->timezone ?? 'UTC';
+        return \Carbon\Carbon::parse($value)->timezone($timezone)->format('Y-m-d H:i:s T');
     }
 }
