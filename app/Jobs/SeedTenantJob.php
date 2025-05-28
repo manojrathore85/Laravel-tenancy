@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Tenant;
+use App\Models\Tenant\Project;
 use App\Models\Tenant\User;
 
 class SeedTenantJob implements ShouldQueue
@@ -35,9 +36,15 @@ class SeedTenantJob implements ShouldQueue
                 'phone' => $this->tenant->phone,
                 'is_super_admin' => 1,
                 'status' => 0,
-
             ]);
-            $user->assignRole('admin');
+            //assigne project also here
+            $projects = Project::all();
+
+            foreach ($projects as $project) {
+                $project->users()->attach(1);
+            }
+            
+            //$user->projects()->attach(1);
         });
     }
 }
