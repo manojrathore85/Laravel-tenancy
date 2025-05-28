@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreign('assigned_to')->references('id')->on('users')->onDelete('cascade');
             $table->string('description', 1000);
             $table->binary('attachment')->nullable();
-            $table->string('status')->default(0);
+            $table->string('status')->default('open');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

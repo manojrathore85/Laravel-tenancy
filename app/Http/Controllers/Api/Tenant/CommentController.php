@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Notifications\IssueCommentedNotification;
-
+use App\Models\Tenant\ActivityLog;
+use Carbon\Carbon;
 class CommentController extends Controller
 {
     /**
@@ -24,10 +25,41 @@ class CommentController extends Controller
     {
     
         try {
-            $comments = Comment::with('commentBy')->with('updateBy')
+            $comments = Comment::with('commentBy')->with('updateBy')->with('ActivityLog')
             ->where('issue_id', $issue->id)
+            ->latest()
             ->get();
-            return response()->json($comments, 200);
+            
+            $logs = ActivityLog::with('user')
+                ->where('subject_type', Issue::class)
+                ->where('log_name', 'issue')
+                ->where('subject_id', $issue->id)
+                ->latest()
+                ->get();
+             
+
+            $comments->transform(function ($item) {
+                $item->type = 'comment';
+                $item->sort_timestamp = Carbon::createFromFormat('d-m-Y H:i:s T', $item->updated_at);
+                return $item;
+            });
+
+            $logs->transform(function ($item) {
+                $item->type = 'log';
+                $item->sort_timestamp = Carbon::createFromFormat('d-m-Y H:i:s T', $item->updated_at ?? $item->created_at);
+                return $item;
+            });
+
+            // Step 3: Merge and sort by `updated_at`
+           $merged = $comments->merge($logs)
+    ->sortBy('sort_timestamp')
+    ->values();
+
+
+            
+            
+            return response()->json($merged, 200);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -58,6 +90,11 @@ class CommentController extends Controller
             }
             $data['comment_by'] = auth()->user()->id;      
             $issue = Issue::find($data['issue_id']);
+           //check if $data['status'] is set and not empty the only 
+            if (isset($data['status']) && !empty($data['status'])) {
+                $issue->status = $data['status'];
+            }
+            $issue->save();
             $comment = Comment::create($data);      
             
 
@@ -107,7 +144,7 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CommentRequest $request, Comment $comment)
+    public function update(CommentRequest $request, Comment $comments)
     {
         try {
             $data = $request->all();
@@ -118,7 +155,7 @@ class CommentController extends Controller
             }
             //$data['comment_by'] = auth()->user()->id;
             $data['updated_by'] = auth()->user()->id;
-            $comment= Comment::findOrFail($comment->id);
+            $comment= Comment::findOrFail($comments->id);
             $comment->update($data);
             return response()->json([
                 'status' => 'success',

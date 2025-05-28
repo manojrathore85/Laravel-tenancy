@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Permission\Contracts\Permission;
 use app\Http\Models\Tenant\roleMenuPermissions;
+use App\Models\Tenant\BaseModel;
 use App\Models\Tenant\RoleMenuPermission;
 
-class Menu extends Model
+class Menu extends BaseModel
 {
     use HasFactory;
 

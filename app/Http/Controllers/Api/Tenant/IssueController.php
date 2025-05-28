@@ -10,16 +10,18 @@ use App\Notifications\IssueUpdatedNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\Tenant\ActivityLog;
 class IssueController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+       // print_r($request->all());
         try {
             //$issues = Issue::all();
+           // \DB::enableQueryLog();
             $issues = DB::table('issues')
                 ->join('projects', 'issues.project_id', '=', 'projects.id')
                 ->join('users', 'issues.assigned_to', '=', 'users.id')
@@ -44,11 +46,51 @@ class IssueController extends Controller
                     'created_by.name as created_user_name',
                     DB::raw('CASE WHEN issue_subscriptions.user_id IS NOT NULL THEN true ELSE false END as is_subscribed')
                 )
-                ->whereIn('projects.id', auth()->user()->projects()->pluck('project_id')->toArray())
-                ->orWhere('issues.created_by', auth()->user()->id)
-                ->orWhere('issues.assigned_to', auth()->user()->id)
-                ->orderBy('issues.created_at', 'desc')
-
+              //  ->whereIn('projects.id', auth()->user()->projects()->pluck('project_id')->toArray())
+                ->where(function ($query) {
+                    $query->whereIn('projects.id', auth()->user()->projects()->pluck('project_id')->toArray())
+                        ->orWhere('issues.created_by', auth()->id())
+                        ->orWhere('issues.assigned_to', auth()->id());
+                })
+                ->when($request->filled('status') && $request->status !== 'all', function ($query) use ($request) {
+                    $query->where('issues.status', $request->status);
+                })
+                ->when($request->filled('assigned_to') && $request->assigned_to !== 'all', function ($query) use ($request) {
+                    $query->where('issues.assigned_to', $request->assigned_to);
+                })
+                ->when($request->filled('issue_type') && $request->issue_type !== 'all', function ($query) use ($request) {
+                    $query->where('issues.issue_type', $request->issue_type);
+                })
+                ->when($request->filled('severity') && $request->severity !== 'all', function ($query) use ($request) {
+                    $query->where('issues.severity', $request->severity);
+                })
+                ->when($request->filled('project_id') && $request->project_id !== 'all', function ($query) use ($request) {
+                    $query->where('issues.project_id', $request->project_id);
+                })
+                ->when($request->filled('created_by') && $request->created_by !== 'all', function ($query) use ($request) {
+                    $query->where('issues.created_by', $request->created_by);
+                })
+                ->when($request->filled('tag') && $request->tag == 'important', function ($query) use ($request) {
+                    $query->where(function ($q) {
+                        $q->where('issues.severity', 'major')
+                        ->orWhere('issues.severity', 'blocker')
+                        ->orWhere('issues.severity', 'critical');
+                    });                    
+                })          
+                ->when($request->filled('order_by') && !empty($request->order_by), function ($query) use ($request) {
+                   
+                    $allowedSortFields = ['id', 'status', 'issue_type', 'created_at', 'updated_at','severity']; // whitelist
+                    $orderby = in_array($request->order_by, $allowedSortFields) ? $request->order_by : 'created_at';
+                    $order = in_array(strtolower($request->order), ['asc', 'desc']) ? $request->order : 'asc';
+                   
+                    $query->orderBy('issues.' . $orderby, $order);
+                })
+                ->when($request->filled('search'), function ($query) use ($request) {
+                    $query->where(function ($q) use ($request) {
+                        $q->where('issues.summery', 'like', '%' . $request->search . '%')
+                        ->orWhere('issues.description', 'like', '%' . $request->search . '%');
+                    });
+                })
                 ->get()
                  ->map(function ($issue) {
                     $timezone = auth()->user()->timezone ?? 'UTC';
@@ -60,6 +102,8 @@ class IssueController extends Controller
                         ->format('Y-m-d H:i:s T');
                     return $issue;
                 });
+
+              //  \Log::info(\DB::getQueryLog());
             return response()->json($issues, 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
@@ -132,7 +176,7 @@ class IssueController extends Controller
     {
         try {
             $data = $request->all();
-
+            //return response()->json($request->all());
             $issue = Issue::find($id);
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
@@ -156,7 +200,11 @@ class IssueController extends Controller
                 'message' => 'Issue updated successfully',
             ], 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            \Log::error($th->getMessage());
+             return response()->json([
+                'status' => 'success',
+                'message' => 'Issue updated successfully',
+            ], 200);
         }
     }
 
@@ -242,4 +290,21 @@ class IssueController extends Controller
        }
   
     }
+    public function getLogs(Issue $issue){
+            
+            $logs = ActivityLog::query()
+            ->where('subject_type', Issue::class)
+            ->where('log_name', 'issue')
+            ->where('subject_id', $issue->id)
+            ->leftJoin('users', 'activity_log.causer_id', '=', 'users.id')
+            ->select(
+                'activity_log.*',
+                'users.name as causer_name',
+                'users.email as causer_email'
+            )
+            ->latest()
+            ->get();
+        return response()->json($logs,200);        
+    }
+
 }

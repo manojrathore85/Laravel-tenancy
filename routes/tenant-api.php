@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Tenant\ProjectController;
 use App\Http\Controllers\Api\Tenant\IssueController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Middleware\FileUrlMiddleware;
+use App\Http\Controllers\Api\Tenant\DropDownController;
 use App\Models\Tenant;
 Route::middleware([
     'api', 
@@ -49,8 +50,12 @@ Route::middleware([
         //Route for dropdown data 
         Route::prefix('dropdowns')->group(function () {
             Route::get('/users/{project}', [TenantUserController::class, 'getUsersByProject']);
+            Route::get('/users', [TenantUserController::class, 'index']);
             Route::get('/projects', [ProjectController::class, 'index']);          
             Route::get('/timezones', [TenantController::class, 'getTimeZone']);          
+            Route::get('/status', [DropDownController::class, 'issueStatusOptions']);          
+            Route::get('/types', [DropDownController::class, 'issueTypeOptions']);          
+            Route::get('/severity', [DropDownController::class, 'issueSeverityOptions']);          
         });
         Route::get('/users', [TenantUserController::class, 'index'])->middleware('menuPermission:users,can_view');
         Route::post('/users', [TenantUserController::class, 'store'])->middleware('menuPermission:users,can_add');
@@ -90,6 +95,7 @@ Route::middleware([
             Route::post('issues/{issues}/removeAttachment', 'removeAttachment')->middleware('menuPermission:issues,can_edit');
             Route::post('issues/{issue}/subscribe', 'subscribe');
             Route::post('issues/{issue}/unsubscribe', 'unsubscribe');
+            Route::get('issues/{issue}/logs', 'getLogs');
         });
         Route::controller(CommentController::class)->group(function () {
             Route::get('comments', 'index')->middleware('menuPermission:comments,can_view');
@@ -99,6 +105,8 @@ Route::middleware([
             Route::delete('comments/{comments}', 'destroy')->middleware('menuPermission:comments,can_delete');
             Route::post('comments/{comments}/removeAttachment', 'removeAttachment')->middleware('menuPermission:comments,can_edit');
             Route::get('issues/{issue}/getComments', 'getIssueComments')->middleware('menuPermission:issues,can_view');
+            Route::get('comments/{issue}/logs', 'getLogs');
+            
         });
 
        
