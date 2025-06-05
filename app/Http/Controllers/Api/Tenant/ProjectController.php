@@ -16,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        try {   
+        try {
             $user = auth()->user();
 
             if ($user->is_super_admin === 1) {
@@ -48,6 +48,8 @@ class ProjectController extends Controller
     {
         try {
             $project = Project::create($request->all());
+            //$project->users()->syncWithoutDetaching( [$request->project_lead => ['role_id' => 1, 'is_lead' => 1]]);
+            $project->setLead($request->project_lead);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Project created successfully',
@@ -66,7 +68,13 @@ class ProjectController extends Controller
     public function show(string $id)
     {
         try {
-            $project = Project::find($id);
+             $project = Project::with('users')->findOrFail($id);
+
+            
+             $project->lead_id = $project->lead->id; // This now works safely
+             
+             return response()->json($project);
+
             return response()->json($project, 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -91,7 +99,9 @@ class ProjectController extends Controller
     {
         try {
             $project = Project::find($id);
+
             $project->update($request->all());
+            $project->setLead($request->project_lead);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Project Updated successfully',
@@ -130,19 +140,20 @@ class ProjectController extends Controller
             ], 500);
         }
     }
-    public function assignUsers(Request $request){
+    public function assignUsers(Request $request)
+    {
         $validated = $request->validate([
             'user_ids' => 'required|array',
             'user_ids.*.user_id' => 'required|integer|exists:users,id',
             'user_ids.*.role_id' => 'nullable|integer',
             'project_id' => 'required|integer|exists:projects,id',
         ]);
-    
+
         try {
             $project = Project::findOrFail($request->project_id);
-    
+
             $syncData = [];
-    
+
             foreach ($request->user_ids as $user) {
                 $syncData[$user['user_id']] = [
                     'role_id' => $user['role_id'],
@@ -150,9 +161,9 @@ class ProjectController extends Controller
                     'updated_by' => auth()->id(),
                 ];
             }
-    
+
             $project->users()->sync($syncData);
-    
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Users assigned successfully.',
@@ -164,10 +175,11 @@ class ProjectController extends Controller
             ], 500);
         }
     }
-    public function getAssignedUsers(string $projectId) {
+    public function getAssignedUsers(string $projectId)
+    {
         try {
-            $assignedUsers =UserHasProject::select('user_id', 'role_id')->where('project_id', $projectId)->get();
-          
+            $assignedUsers = UserHasProject::select('user_id', 'role_id')->where('project_id', $projectId)->get();
+
             return response()->json([
                 'status' => 'success',
                 'data' => $assignedUsers,
@@ -178,5 +190,34 @@ class ProjectController extends Controller
                 'message' => $th->getMessage(),
             ], 500);
         }
+    }
+    public function getWatchers(Project $project)
+    {
+        return response()->json($project->watchers, 200);
+    }
+    public function setWatchers(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'watchers' => ['required', function ($attribute, $value, $fail) {
+                $emails = array_map('trim', explode(',', $value));
+                foreach ($emails as $email) {
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        $fail("Invalid email found: $email");
+                    }
+                }
+            }],
+        ]);
+        // Clean and normalize emails
+        $emailsArray = array_map('trim', explode(',', $request->watchers));
+        $finalEmailString = implode(',', $emailsArray);
+
+        // Save to project
+        $project->watchers = $finalEmailString;
+        $project->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Watchers updated successfully',
+        ]);
     }
 }

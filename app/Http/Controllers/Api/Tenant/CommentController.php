@@ -25,7 +25,7 @@ class CommentController extends Controller
     {
     
         try {
-            $comments = Comment::with('commentBy')->with('updateBy')->with('ActivityLog')
+            $comments = Comment::with('commentBy')->with('updatedBy')->with('ActivityLog')
             ->where('issue_id', $issue->id)
             ->latest()
             ->get();
@@ -52,12 +52,9 @@ class CommentController extends Controller
 
             // Step 3: Merge and sort by `updated_at`
            $merged = $comments->merge($logs)
-    ->sortBy('sort_timestamp')
-    ->values();
-
-
-            
-            
+            ->sortBy('sort_timestamp')
+            ->values();                  
+                    
             return response()->json($merged, 200);
 
         } catch (\Throwable $th) {
@@ -82,28 +79,44 @@ class CommentController extends Controller
     public function store(CommentRequest $request)
     {
         try {
+           
             $data = $request->all();
             if($request->hasFile('attachment')){
                 $file = $request->file('attachment');
                 $path = $file->store('comments','public');
                 $data['attachment'] = $path;
             }
-            $data['comment_by'] = auth()->user()->id;      
-            $issue = Issue::find($data['issue_id']);
+            $data['comment_by'] = auth()->user()->id;
+            $issue = Issue::with(['createdBy', 'assignedTo', 'project'])->find($data['issue_id']);
+            
            //check if $data['status'] is set and not empty the only 
             if (isset($data['status']) && !empty($data['status'])) {
                 $issue->status = $data['status'];
             }
             $issue->save();
             $comment = Comment::create($data);      
-            
 
-            // Notify subscribers
-            foreach ($issue->subscribers as $user) {
-                if ($user->id !== auth()->id()) {
-                    $user->notify(new IssueCommentedNotification($issue, $comment));
-                }
+            // Send notification emails
+            $notified = [];
+            notify_once($notified, $comment->commentBy, new IssueCommentedNotification($issue, $comment, 'commenter'));
+            notify_once($notified, $comment->updatedBy, new IssueCommentedNotification($issue, $comment, 'updator'));
+            notify_once($notified, $issue->createdBy, new IssueCommentedNotification($issue, $comment, 'creator'));
+            notify_once($notified, $issue->assignedTo, new IssueCommentedNotification($issue, $comment, 'assignee'));
+
+            // Team members
+            foreach ($issue->project->users ?? [] as $user) {
+                notify_once($notified, $user, new IssueCommentedNotification($issue, $comment, 'team'));
             }
+
+            // Subscribers
+            foreach ($issue->subscribers ?? [] as $user) {
+                notify_once($notified, $user, new IssueCommentedNotification($issue, $comment, 'subscriber'), true);
+            }
+            // watchers
+            if(!empty($issue->project->watchers)){
+                sendNotificationEmails($issue->project->watchers, new IssueCommentedNotification($issue, $comment, 'watcher'));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Comment added successfully',
@@ -154,9 +167,58 @@ class CommentController extends Controller
                 $data['attachment'] = $path;
             }
             //$data['comment_by'] = auth()->user()->id;
+           // $issue = Issue::with(['createdBy', 'assignedTo', 'project'])->find($data['issue_id']);
+            
+            
             $data['updated_by'] = auth()->user()->id;
-            $comment= Comment::findOrFail($comments->id);
+            $comment = Comment::with([
+                            'issue',
+                            'issue.createdBy',
+                            'issue.updatedBy',
+                            'issue.assignedTo',
+                            'commentBy',
+                            'updatedBy'
+                        ])->find($comments->id);
+            $issue = $comment->issue;
+            $originalData = $comment->getOriginal();
             $comment->update($data);
+            $updatedData = $comment->getAttributes();
+            $changes = [];
+            foreach ($data as $key => $newValue) {
+                if (
+                    array_key_exists($key, $originalData) &&
+                    $originalData[$key] != $updatedData[$key]
+                ) {
+                    $changes[$key] = [
+                        'old' => $originalData[$key],
+                        'new' => $updatedData[$key],
+                    ];
+                }
+            }
+
+            
+            // Send notification emails                 
+            $notified = [];
+            notify_once($notified, $comment->commentBy, new IssueCommentedNotification($issue, $comment, 'commenter', $changes));
+            notify_once($notified, $comment->updatedBy, new IssueCommentedNotification($issue, $comment, 'updator', $changes));
+            notify_once($notified, $issue->createdBy, new IssueCommentedNotification($issue, $comment, 'creator', $changes));
+            notify_once($notified, $issue->assignedTo, new IssueCommentedNotification($issue, $comment, 'assignee', $changes));
+
+            // Team members
+            foreach ($issue->project->users ?? [] as $user) {
+                notify_once($notified, $user, new IssueCommentedNotification($issue, $comment, 'team'));
+            }
+
+            // Subscribers
+            foreach ($issue->subscribers ?? [] as $user) {
+                notify_once($notified, $user, new IssueCommentedNotification($issue, $comment, 'subscriber', $changes), true);
+            }
+            // watchers
+            if(!empty($issue->project->watchers)){
+                sendNotificationEmails($issue->project->watchers, new IssueCommentedNotification($issue, $comment, 'watcher', $changes));
+            }
+
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'Comment updated successfully',

@@ -91,28 +91,37 @@ class TenantUserController extends Controller
     }
     public function login(LoginRequest $request):JsonResponse
     {
+       
         $request->authenticate();
+         
         try {
             //$user = $request->user();
             $user = TenantUser::find(auth()->guard('tenant')->user()->id);
-        
+     
             //$user->assignedRoles = $user->getRoleNames(); 
+           
             if($user->is_super_admin){
-                $assignedProjects = Project::all();
-            }else{
+                //$assignedProjects = Project::all();
+                $assignedProjects = $user->assigned_projects; 
+                
+            }else{                
                 $assignedProjects = $user->assigned_projects; 
             }
-            if(!empty($assignedProjects->toArray())) {
-                $user->assigned_projects = $assignedProjects;  
-                $user->loginProjectId = $assignedProjects[0]->id;   
+            if(!empty($assignedProjects)) {
+                //echo "asdasdfasdf";
+                $user->assigned_projects = $assignedProjects;
+                $user->loginProjectId = $assignedProjects->first()->id;   
             }
             $token = $user->createToken($user->email)->plainTextToken;
+            //return response()->json($assignedProjects->first()->id);
             return response()->json([
                 'status' => 'success', 
                 'message' => 'User logged in successfully', 
                 'user' => $user,
-                'token' => $token], 200);
+                'token' => $token
+            ], 200);
         } catch (\Throwable $th) {
+            \Log::error($th);
             return response()->json([
                 'status' => 'error',
                 'message' => $th->getMessage(),    

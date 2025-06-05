@@ -8,21 +8,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class IssueUpdatedNotification extends Notification
+class IssueCreatedNotification extends Notification
 {
-    //use Queueable;
+    use Queueable;
 
     /**
      * Create a new notification instance.
      */
     private Issue $issue;
     private $recipientType;
-    private array $changes;
-    public function __construct(Issue $issue, $recipientType, array $changes = [])
+    public function __construct(Issue $issue, $recipientType)
     {
         $this->issue = $issue;
         $this->recipientType = $recipientType;
-        $this->changes = $changes;
     }
 
     /**
@@ -44,29 +42,25 @@ class IssueUpdatedNotification extends Notification
             $frontendUrl = tenant_url('frontend');
             switch ($this->recipientType) {
                 case 'assignee':
-                    $title = 'The issue assigned to you has been updated';
+                    $title = 'A New issue assigned to you';
                     break;
                 case 'watcher':
-                    $title = 'The project you are viewing has an issue updated';
+                    $title = 'The project you are viewing an issue created';
                     break;
                 case 'creator':
-                    $title = 'The issue you created has been updated';
+                    $title = 'A new issue has been created by you';
                     break;
-                case 'updator':
-                    $title = 'The issue has been updated';
-                    break;    
+                 
                 case 'team':
-                    $title = 'An issue was updated by your team';
+                    $title = 'A new issue created in your team';
                     break;
-                case 'subscriber':
-                    $title = 'Your Subscribed issue was updated';
-                    break;    
                 default:
-                    $title = 'Issue Update Notification';
+                    $title = 'New Issue Notification';
                     break;
             }
             $issueUrl = $frontendUrl."/issues/".$this->issue->id;
-            $subject = "(".$this->issue->project->code. ")|". $this->issue->summery. "|IMS|Issue Updated|(Url:". $issueUrl.")";
+            $subject = "(".$this->issue->project->code. ")|". $this->issue->summery. "|IMS|New Issue|(Url:". $issueUrl.")";
+            
             return (new MailMessage)
                 ->subject($subject)
                 ->view("emails.issueNotification", [
@@ -75,18 +69,15 @@ class IssueUpdatedNotification extends Notification
                     'issue' => $this->issue,
                     'url' => $frontendUrl,
                     'recipientType' => $this->recipientType,
-                    'changes' => $this->changes,
                 ]);
+    
         } catch (\Throwable $e) {
-            \Log::error('Error in IssueUpdateNotification@toMail', [
+            \Log::error('Error in IssueCreateNotification@toMail', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'notifiable' => $notifiable,
-            ]);
-
-            // Optional: fail silently or throw again
-            // return (new MailMessage)->line('An error occurred while sending the notification.');
-            throw $e; // Or comment this line if you don't want the job to fail
+            ]);      
+            throw $e;
         }
     }
 

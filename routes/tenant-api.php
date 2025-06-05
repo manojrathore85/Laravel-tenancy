@@ -14,15 +14,22 @@ use App\Http\Controllers\Api\TenantController;
 use App\Http\Middleware\FileUrlMiddleware;
 use App\Http\Controllers\Api\Tenant\DropDownController;
 use App\Models\Tenant;
+use App\Models\Tenant\Project;
+
 Route::middleware([
     'api', 
     InitializeTenancyByDomain::class, 
     PreventAccessFromCentralDomains::class,
     FileUrlMiddleware::class
 ])->prefix('api')->group(function () {
-    // Route::get('/tenant-test-route', function () {
-    //     return response()->json(['message' => 'Tenant API is working!']);
-    // });
+     Route::get('/test', function () {
+             $project = Project::find(8);
+            //$lead = $project->project_lead?->id;
+            //$project->lead = $lead;
+            //print_r($project);
+        return response()->json($project, 200);
+        
+    });
     // Route::get('/test-notify', function () {
     //     $issue = \App\Models\Tenant\Issue::first();
     //     $user = \App\Models\Tenant\User::first();
@@ -85,6 +92,8 @@ Route::middleware([
             Route::delete('projects/{project}', 'destroy')->middleware('menuPermission:project,can_delete');
             Route::get('projects/{project}/assigned-users', 'getAssignedUsers')->middleware('menuPermission:project,can_view');
             Route::post('assign-users', 'assignUsers')->middleware('menuPermission:project,can_add');
+            Route::get('projects/{project}/watchers', 'getWatchers')->middleware('menuPermission:project,can_add');
+            Route::post('projects/{project}/watchers', 'setWatchers')->middleware('menuPermission:project,can_add');
         });
         Route::controller(IssueController::class)->group(function () {
             Route::get('issues', 'index')->middleware('menuPermission:issues,can_view');

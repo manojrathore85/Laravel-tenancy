@@ -29,7 +29,7 @@ class Comment extends BaseModel
     {
         return $this->belongsTo(User::class, 'comment_by');
     }
-    public function updateBy()
+    public function updatedBy()
     {
         return $this->belongsTo(User::class, 'update_by');
     }

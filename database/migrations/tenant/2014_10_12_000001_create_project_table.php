@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
+            $table->string('description')->nullable();
+            $table->string('watchers')->nullable();
             $table->string('status')->default(0); // 0 = active, 1 = inactive
             $table->timestamps();
         });

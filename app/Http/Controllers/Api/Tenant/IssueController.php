@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Tenant\ActivityLog;
+use App\Models\Tenant\Comment;
+use App\Notifications\IssueCreatedNotification;
+use Carbon\Carbon;
+
 class IssueController extends Controller
 {
     /**
@@ -136,7 +140,26 @@ class IssueController extends Controller
 
             $data['created_by'] = auth()->user()->id;
 
-            Issue::create($data);
+            $issue = Issue::create($data);
+
+            // Send notification emails
+            $notified = [];
+            notify_once($notified, $issue->createdBy, new IssueCreatedNotification($issue, 'creator'));
+            notify_once($notified, $issue->assignedTo, new IssueCreatedNotification($issue, 'assignee'));
+
+            // Team members
+            foreach ($issue->project->users ?? [] as $user) {
+                notify_once($notified, $user, new IssueCreatedNotification($issue, 'team'));
+            }
+
+            // Subscribers
+            foreach ($issue->subscribers ?? [] as $user) {
+                notify_once($notified, $user, new IssueCreatedNotification($issue, 'subscriber'), true);
+            }
+            // watchers
+            if(!empty($issue->project->watchers)){
+                sendNotificationEmails($issue->project->watchers, new IssueCreatedNotification($issue, 'watcher'));
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -177,7 +200,7 @@ class IssueController extends Controller
         try {
             $data = $request->all();
             //return response()->json($request->all());
-            $issue = Issue::find($id);
+            $issue = Issue::with(['createdBy', 'assignedTo', 'project','comments'])->find($id);
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
                 $path = $file->store('issues', 'public');
@@ -185,16 +208,54 @@ class IssueController extends Controller
                 $data['attachment'] = $path;
             }
             $data['updated_by'] = auth()->user()->id;
-            $issue->update($data);
-          
-            // Notify subscribers
-            foreach ($issue->subscribers as $user) {
-                //if ($user->id !== auth()->id()) {
-                    \Log::info("email sending to user id ".$user->id);
-                    $user->notify(new IssueUpdatedNotification($issue));
-                //}
+       
+            // get the original data and old data and compaire and find athe changed fields
+            $originalData = $issue->getOriginal();
+            $issue->update($data);    
+            $updatedData = $issue->getAttributes();        
+            $changes = [];
+            foreach ($data as $key => $newValue) {          
+                if (
+                    array_key_exists($key, $originalData) &&
+                    $originalData[$key] != $updatedData[$key]
+                ) {
+                    $changes[$key] = [
+                        'old' => $originalData[$key],
+                        'new' => $updatedData[$key],
+                    ];
+                }
             }
+            //get issue logs if send_histry is true in request
+           
+            if($request->send_history){
+                
+                $issue->history = $this->getIssueComments($issue);   
+                              
+            }    
+        
             
+            $issue->updatedBy = auth()->user();
+            
+            //send notification emails
+            $notified = [];
+            notify_once($notified, $issue->createdBy, new IssueUpdatedNotification($issue, 'creator', $changes));
+            notify_once($notified, $issue->assignedTo, new IssueUpdatedNotification($issue, 'assignee', $changes));
+            notify_once($notified, $issue->updatedBy, new IssueUpdatedNotification($issue, 'updator', $changes));
+
+            // Team members
+            foreach ($issue->project->users ?? [] as $user) {
+                notify_once($notified, $user, new IssueUpdatedNotification($issue, 'team', $changes));
+            }
+
+            // Subscribers
+            foreach ($issue->subscribers ?? [] as $user) {
+                notify_once($notified, $user, new IssueUpdatedNotification($issue, 'subscriber', $changes), true);
+            }
+            // watchers
+            if(!empty($issue->project->watchers)){
+                sendNotificationEmails($issue->project->watchers, new IssueUpdatedNotification($issue, 'watcher', $changes));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Issue updated successfully',
@@ -290,9 +351,10 @@ class IssueController extends Controller
        }
   
     }
-    public function getLogs(Issue $issue){
-            
-            $logs = ActivityLog::query()
+    
+    public function fetchLogs(Issue $issue, bool $first = false)
+    {
+        $query = ActivityLog::query()
             ->where('subject_type', Issue::class)
             ->where('log_name', 'issue')
             ->where('subject_id', $issue->id)
@@ -302,9 +364,53 @@ class IssueController extends Controller
                 'users.name as causer_name',
                 'users.email as causer_email'
             )
+            ->latest();
+
+         return $first ? $query->first() : $query->get(); 
+
+    }
+    public function getLogs(Issue $issue, bool $first = false){
+        return response()->json($this->fetchLogs($issue, $first), 200);
+    }
+
+    public function getIssueComments(Issue $issue)
+    {
+    
+     
+            $comments = Comment::with('commentBy')->with('updatedBy')->with('ActivityLog')
+            ->where('issue_id', $issue->id)
             ->latest()
             ->get();
-        return response()->json($logs,200);        
+                  
+            $logs = ActivityLog::with('user')
+                ->where('subject_type', Issue::class)
+                ->where('log_name', 'issue')
+                ->where('subject_id', $issue->id)
+                ->latest()
+                ->get();
+            
+
+            $comments->transform(function ($item) {
+                $item->type = 'comment';
+                $item->sort_timestamp = Carbon::createFromFormat('d-m-Y H:i:s T', $item->updated_at);
+                return $item;
+            });
+
+            $logs->transform(function ($item) {
+                $item->type = 'log';
+                $item->sort_timestamp = Carbon::createFromFormat('d-m-Y H:i:s T', $item->updated_at ?? $item->created_at);
+                return $item;
+            });
+
+            // Step 3: Merge and sort by `updated_at`
+           $merged = $comments->merge($logs)
+            ->sortBy('sort_timestamp')
+            ->values(); 
+                             
+                    
+            return $merged;
+
+       
     }
 
 }

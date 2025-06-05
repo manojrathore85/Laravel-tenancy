@@ -28,6 +28,7 @@ class ProjectRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'code' => ['string','max:5', 'unique:projects,code,' . $project],
+            'project_lead' => ['required'],
             'status' => ['required', 'in:0,1'],
         ];
     }
