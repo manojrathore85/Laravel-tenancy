@@ -23,6 +23,7 @@ class TenantDatabaseSeeder extends Seeder
                 MenuSeeder::class,
                 RoleSeeder::class,
                 ProjectSeeder::class,
+                MasterDataSeeder::class
             ]
         );
     }
