@@ -7,6 +7,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;  
 use App\Models\Tenant\BaseModel;
 use App\Models\Tenant\ActivityLog;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Issue extends BaseModel
 {
@@ -70,6 +72,24 @@ class Issue extends BaseModel
     // Re-assign modified properties
     $activity->properties = collect($properties);
 }
+    protected static function eventsToBeRecorded(): Collection
+    {
+        if (isset(static::$recordEvents)) {
+            return collect(static::$recordEvents);
+        }
+
+        $events = collect([
+       
+            'updated',
+            'deleted',
+        ]);
+
+        if (collect(class_uses_recursive(static::class))->contains(SoftDeletes::class)) {
+            $events->push('restored');
+        }
+
+        return $events;
+    }
 
 
 }

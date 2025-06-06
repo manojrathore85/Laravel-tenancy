@@ -7,6 +7,8 @@ use App\Models\Tenant\Issue;
 use App\Models\Tenant\BaseModel;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Comment extends BaseModel
 {
     use HasFactory;
@@ -44,5 +46,24 @@ class Comment extends BaseModel
             ->useLogName('comment')
             ->logOnlyDirty()
             ->setDescriptionForEvent(fn(string $eventName) => "Comment has been {$eventName}");
+    }
+    
+    protected static function eventsToBeRecorded(): Collection
+    {
+        if (isset(static::$recordEvents)) {
+            return collect(static::$recordEvents);
+        }
+
+        $events = collect([
+       
+            'updated',
+            'deleted',
+        ]);
+
+        if (collect(class_uses_recursive(static::class))->contains(SoftDeletes::class)) {
+            $events->push('restored');
+        }
+
+        return $events;
     }
 }
