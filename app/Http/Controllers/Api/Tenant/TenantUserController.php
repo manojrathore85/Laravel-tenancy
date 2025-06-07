@@ -13,7 +13,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TenantUserController extends Controller
 {
@@ -233,13 +233,16 @@ class TenantUserController extends Controller
     }
     public function uppdateProfileImage(string $id, Request $request){
         $request->validate([
-           'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+           'profile_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
         try {
             $data = $request->all();
           
             $user = TenantUser::find($id);            
-            if ($request->hasFile('profile_image')) {               
+            if ($request->hasFile('profile_image')) {       
+                if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                    Storage::disk('public')->delete($user->profile_image);
+                }         
                 $file = $request->file('profile_image');
                 $path = $file->store('User', 'public');             
                 $data['profile_image'] = $path;               

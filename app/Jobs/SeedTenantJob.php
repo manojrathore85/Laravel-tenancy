@@ -41,7 +41,10 @@ class SeedTenantJob implements ShouldQueue
             $projects = Project::all();
 
             foreach ($projects as $project) {
-                $project->users()->attach(1);
+                $project->users()->attach(1, [
+                    'is_lead' => 1,
+                    'role_id' => 1
+                ]);
             }
             
             //$user->projects()->attach(1);

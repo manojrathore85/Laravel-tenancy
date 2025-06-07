@@ -90,13 +90,17 @@ class ProfileController extends Controller
     }
     public function uppdateProfileImage(string $id, Request $request){
         $request->validate([
-           'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+           'profile_image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
         try {
             $data = $request->all();
           
             $user = User::find($id);            
-            if ($request->hasFile('profile_image')) {               
+            if ($request->hasFile('profile_image')) {   
+                if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                    Storage::disk('public')->delete($user->profile_image);
+                }            
+                
                 $file = $request->file('profile_image');
                 $path = $file->store('User', 'public');             
                 $data['profile_image'] = $path;               

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderRequest;
 use App\Models\Order;
 use App\Models\Tenant;
+use App\Notifications\TenantNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -138,7 +139,7 @@ class OrderController extends Controller
     
         return response()->json(['exists' => $exists]);
     }
-    public function status(OrderRequest $request, $id)
+    public function status(Request $request, $id)
     {
         try {
             DB::beginTransaction(); //
@@ -160,6 +161,7 @@ class OrderController extends Controller
                     'frontend_url' => $order->domain.'.'.config('app.frontend_base_domain'),
                 ]);
                 $message = "Order Status Updated Successfully, Tenant Created Successfully";
+                sendNotificationEmails($order->email, new TenantNotification($tenant));
             }
             DB::commit();
             return response()->json([

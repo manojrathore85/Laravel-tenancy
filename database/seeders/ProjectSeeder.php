@@ -16,18 +16,21 @@ class ProjectSeeder extends Seeder
         Project::insert([
             [
             'name' => 'Project 1',
-            'code' => 'P1',
-            'status' => 'active',
+            'code' => 'P101',
+            'description' => 'project1 description',            
+            'status' => 0,
             ],
             [
             'name' => 'Project 2',
-            'code' => 'P2',
-            'status' => 'active',
+            'code' => 'P102',
+             'description' => 'project1 description',
+            'status' => 0,
             ],
             [
             'name' => 'Project 3',
-            'code' => 'P3',
-            'status' => 'active',
+            'code' => 'P103',
+             'description' => 'project1 description',
+            'status' => 0,
             ]
         ]);
 

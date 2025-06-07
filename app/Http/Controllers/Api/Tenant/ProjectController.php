@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenant\Project;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\ProjectRequest;
+use App\Models\Role;
 use App\Models\Tenant\UserHasProject;
-use App\Models\Tenant\User;
+use App\Models\Tenant\User as TenantUser;
+use App\Notifications\ProjectAssignedNotification;
+use App\Notifications\UserNotification;
 
 class ProjectController extends Controller
 {
@@ -144,9 +147,9 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'user_ids' => 'required|array',
-            'user_ids.*.user_id' => 'required|integer|exists:users,id',
+            'user_ids.*.user_id' => 'required|integer',
             'user_ids.*.role_id' => 'nullable|integer',
-            'project_id' => 'required|integer|exists:projects,id',
+            'project_id' => 'required|integer',
         ]);
 
         try {
@@ -162,13 +165,29 @@ class ProjectController extends Controller
                 ];
             }
 
-            $project->users()->sync($syncData);
+            $changes=  $project->users()->sync($syncData);
+          
+            
+            // Notify only newly attached users
+            $newUserIds = $changes['attached'] ?? [];
+            $assignedBy = auth()->user();
+            if (!empty($newUserIds)) {
+                $users = $project->users()->whereIn('users.id', $newUserIds)->withPivot('role_id')->get();
+
+                foreach ($users as $user) {
+                    $roleId = $user->pivot->role_id;
+                    $roleName = Role::find($roleId)?->name ?? 'Member';
+
+                    $user->notify(new ProjectAssignedNotification($project, $assignedBy, $roleName));
+                }
+            }
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Users assigned successfully.',
             ]);
         } catch (\Throwable $th) {
+            \Log::error($th);
             return response()->json([
                 'status' => 'error',
                 'message' => $th->getMessage(),
