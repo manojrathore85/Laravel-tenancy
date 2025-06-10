@@ -13,32 +13,18 @@ use App\Http\Controllers\Api\Tenant\IssueController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Middleware\FileUrlMiddleware;
 use App\Http\Controllers\Api\Tenant\DropDownController;
-use App\Models\Tenant;
-use App\Models\Tenant\Project;
-
+use Database\Seeders\DemoDataSeeder\DemoDataSeeder;
+use Illuminate\Http\Request;
 Route::middleware([
     'api', 
     InitializeTenancyByDomain::class, 
     PreventAccessFromCentralDomains::class,
     FileUrlMiddleware::class
 ])->prefix('api')->group(function () {
-     Route::get('/test', function () {
-             $project = Project::find(8);
-            //$lead = $project->project_lead?->id;
-            //$project->lead = $lead;
-            //print_r($project);
-        return response()->json($project, 200);
-        
-    });
-    // Route::get('/test-notify', function () {
-    //     $issue = \App\Models\Tenant\Issue::first();
-    //     $user = \App\Models\Tenant\User::first();
-    //     $user->notify(new \App\Notifications\IssueUpdatedNotification($issue));
-    
-    //     return 'Notification sent';
-    // });
 
-     // Tenant-specific authentication
+
+
+    // Tenant-specific authentication
     Route::post('/login', [TenantUserController::class, 'login']);
     Route::post('/register', [TenantUserController::class, 'register'])->name('api.register');
     Route::post('/logout', [TenantUserController::class, 'logout'])->middleware('auth:sanctum');
@@ -82,6 +68,24 @@ Route::middleware([
         Route::apiResource('menus', MenuController::class);
         Route::get('role-menus', [MenuController::class, 'getMenuByRole']);
         Route::get('menu-permission/{id}', [MenuController::class, 'menuPermission']);
+        
+        //demo data seeder routes
+        Route::get('demo-data-domains', function () {
+            $seeder = new DemoDataSeeder();
+            return $seeder->getDomainType();
+            
+        });
+        Route::post('seed-demo-data', function (Request $request) {
+            $domainType = $request->input('domainType'); // or $request->get('domainType');
+            $seeder = new DemoDataSeeder($domainType);  // Run the seeder
+            $seeder->run();
+            return "UserSeeder executed with domainType: {$domainType}";
+        })->middleware('menuPermission:users,can_add');
+   
+        Route::post('delete-demo-data', function () {
+            $seeder = new DemoDataSeeder();
+            return $seeder->cleanup();
+        })->middleware('menuPermission:users,can_delete');
        
        
         Route::controller(ProjectController::class)->group(function () {
@@ -105,6 +109,7 @@ Route::middleware([
             Route::post('issues/{issue}/subscribe', 'subscribe');
             Route::post('issues/{issue}/unsubscribe', 'unsubscribe');
             Route::get('issues/{issue}/logs', 'getLogs');
+            Route::get('issues/counts', 'getIssueCounts')->middleware('menuPermission:issues,can_view');
         });
         Route::controller(CommentController::class)->group(function () {
             Route::get('comments', 'index')->middleware('menuPermission:comments,can_view');

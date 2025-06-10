@@ -18,8 +18,21 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        $issues = Issue::when(!auth()->user()->is_super_admin, function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereIn('projects.id', auth()->user()->projects()->pluck('project_id')->toArray())
+                        ->orWhere('issues.created_by', auth()->id())
+                        ->orWhere('issues.assigned_to', auth()->id());
+                    });
+                })->pluck('id');
+        $comments = Comment::with('commentBy')->with('updatedBy')->with('issue')
+        ->whereIn('issue_id', $issues)
+        ->latest()
+        ->get();
+
+        return response()->json($comments, 200);
     }
+    
 
     public function getIssueComments(Issue $issue)
     {

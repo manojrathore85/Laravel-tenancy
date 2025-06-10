@@ -34,33 +34,28 @@ class RoleSeeder extends Seeder
                 ]);
             }  
             //Role Menu Permissions Menu id the order of menu seeding 
-            RoleMenuPermission::create([
-                'role_id' => $admin->id,
-                'menu_id' => 1,
-                'can_add' => true,
-                'can_edit' => true,
-                'can_delete' => true,
-                'can_view' => true,
-                
-            ]);
-            RoleMenuPermission::create([
-                'role_id' => $admin->id,
-                'menu_id' => 2,
-                'can_add' => true,
-                'can_edit' => true,
-                'can_delete' => true,
-                'can_view' => true,
-                
-            ]);
-            RoleMenuPermission::create([
-                'role_id' => $manager->id,
-                'menu_id' => 1,
-                'can_add' => true,
-                'can_edit' => false,
-                'can_delete' => false,
-                'can_view' => true,
-                
-            ]);
+            foreach ($menus as $menu) {
+                RoleMenuPermission::create([
+                    'role_id' => $manager->id,
+                    'menu_id' => $menu->id,
+                    'can_add' => true,
+                    'can_edit' => true,
+                    'can_delete' => true,
+                    'can_view' => true,
+                    
+                ]);
+            }
+            foreach ($menus as $menu) {
+                RoleMenuPermission::create([
+                    'role_id' => $user->id,
+                    'menu_id' => $menu->id,
+                    'can_add' => true,
+                    'can_edit' => true,
+                    'can_delete' => false,
+                    'can_view' => true,                    
+                ]);
+            }
+
   
 
 

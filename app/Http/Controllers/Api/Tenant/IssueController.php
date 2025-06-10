@@ -46,15 +46,19 @@ class IssueController extends Controller
                     'issues.updated_at',
                     'projects.id as project_id',
                     'projects.name as project_name',
+                    'issues.assigned_to',
                     'users.name as assigned_user_name',
                     'created_by.name as created_user_name',
+                    'created_by.profile_image as created_user_profile_image',
                     DB::raw('CASE WHEN issue_subscriptions.user_id IS NOT NULL THEN true ELSE false END as is_subscribed')
                 )
               //  ->whereIn('projects.id', auth()->user()->projects()->pluck('project_id')->toArray())
-                ->where(function ($query) {
-                    $query->whereIn('projects.id', auth()->user()->projects()->pluck('project_id')->toArray())
+                    ->when(!auth()->user()->is_super_admin, function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereIn('projects.id', auth()->user()->projects()->pluck('project_id')->toArray())
                         ->orWhere('issues.created_by', auth()->id())
                         ->orWhere('issues.assigned_to', auth()->id());
+                    });
                 })
                 ->when($request->filled('status') && $request->status !== 'all', function ($query) use ($request) {
                     $query->where('issues.status', $request->status);
@@ -97,6 +101,7 @@ class IssueController extends Controller
                 })
                 ->get()
                  ->map(function ($issue) {
+                    
                     $timezone = auth()->user()->timezone ?? 'UTC';
                     $issue->created_at = \Carbon\Carbon::parse($issue->created_at)
                         ->timezone($timezone)
@@ -107,8 +112,13 @@ class IssueController extends Controller
                     return $issue;
                 });
 
+                $statusCounts = $issues->groupBy('status')->map->count();
+                $typeCounts = $issues->groupBy('issue_type')->map->count();
+                $assignedToMeCount = $issues->filter(function ($issue) {
+                    return $issue->assigned_to == auth()->id();
+                })->count();
               //  \Log::info(\DB::getQueryLog());
-            return response()->json($issues, 200);
+            return response()->json(['issues' => $issues, 'statusCounts' => $statusCounts, 'typeCounts' => $typeCounts, 'assignedToMeCount' => $assignedToMeCount], 200);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 500);
         }
@@ -411,6 +421,9 @@ class IssueController extends Controller
             return $merged;
 
        
+    }
+    public function resentIssues(){
+       $this->index();
     }
 
 }

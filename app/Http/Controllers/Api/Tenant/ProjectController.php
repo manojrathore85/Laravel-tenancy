@@ -26,7 +26,7 @@ class ProjectController extends Controller
                 return Project::all();
             }
 
-            $projects = User::find(auth()->user()->id)->projects()->get();
+            $projects = TenantUser::find(auth()->user()->id)->projects()->get();
             return response()->json($projects, 200);
         } catch (\Throwable $th) {
             return response()->json([

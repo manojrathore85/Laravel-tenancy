@@ -69,7 +69,7 @@ class User extends Authenticatable
             return url("tenant" . tenant('id') . "/" . $this->profile_image);
         }
         // fallback image or null
-        return url('/images/default-avatar.png');
+        //return url('/images/default-avatar.png');
     }
     public function getRoleForProject(string $projectId)
     {
