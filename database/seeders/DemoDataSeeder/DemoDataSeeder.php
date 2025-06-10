@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\DemoDataSeeder;
 
+use App\Models\Tenant\User;
 use App\Models\Tenant\UserHasProject;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -123,6 +124,11 @@ class DemoDataSeeder extends Seeder
                 base_path('storage/app/public/demo_ids.json'),
                 json_encode($this->insertedIds, JSON_PRETTY_PRINT)
             );
+            $user = User::find(auth()->user()->id); 
+            $assignedProjects = $user->projects;
+            $user->assigned_projects = $assignedProjects;
+            return response()->json(['message' => 'Demo data seeded successfully', 'user' => $user], 200);
+               
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -174,7 +180,10 @@ class DemoDataSeeder extends Seeder
                 json_encode([], JSON_PRETTY_PRINT)
             );
 
-            return "Demo data deleted successfully.";
+             $user = User::find(auth()->user()->id); 
+            $assignedProjects = $user->projects;
+            $user->assigned_projects = $assignedProjects;
+            return response()->json(['message' => 'Demo data seeded successfully', 'user' => $user], 200);
         } catch (\Throwable $th) {
             DB::rollBack(); // Revert DB changes on error
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');

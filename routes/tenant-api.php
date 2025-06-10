@@ -78,8 +78,8 @@ Route::middleware([
         Route::post('seed-demo-data', function (Request $request) {
             $domainType = $request->input('domainType'); // or $request->get('domainType');
             $seeder = new DemoDataSeeder($domainType);  // Run the seeder
-            $seeder->run();
-            return "UserSeeder executed with domainType: {$domainType}";
+           return $seeder->run();
+            // return "UserSeeder executed with domainType: {$domainType}";
         })->middleware('menuPermission:users,can_add');
    
         Route::post('delete-demo-data', function () {
@@ -96,6 +96,7 @@ Route::middleware([
             Route::delete('projects/{project}', 'destroy')->middleware('menuPermission:project,can_delete');
             Route::get('projects/{project}/assigned-users', 'getAssignedUsers')->middleware('menuPermission:project,can_view');
             Route::post('assign-users', 'assignUsers')->middleware('menuPermission:project,can_add');
+            Route::get('projects/{project}/assign-users', 'getAssignedUsers')->middleware('menuPermission:project,can_view');
             Route::get('projects/{project}/watchers', 'getWatchers')->middleware('menuPermission:project,can_add');
             Route::post('projects/{project}/watchers', 'setWatchers')->middleware('menuPermission:project,can_add');
         });
