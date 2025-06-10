@@ -164,8 +164,13 @@ class DemoDataSeeder extends Seeder
             DB::commit();
 
             // Only clear the file after commit
+            $path = base_path('storage/app/public/demo_ids.json');
+            if (!file_exists($path)) {
+                touch($path);
+                chmod($path, 0777);
+            }
             file_put_contents(
-                base_path('storage/app/public/demo_ids.json'),
+                $path,
                 json_encode([], JSON_PRETTY_PRINT)
             );
 
