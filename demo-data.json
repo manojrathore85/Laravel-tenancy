@@ -1,0 +1,1104 @@
+{
+    "users": [
+        {
+            "name": "Alice Johnson",
+            "email": "alice.johnson@example.com",
+            "password": "Password@1",
+            "phone": "1234567890",
+            "gender": "Female",
+            "role_id": 1
+        },
+        {
+            "name": "Bob Smith",
+            "email": "bob.smith@example.com",
+            "password": "Password@1",
+            "phone": "9876543210",
+            "gender": "Male",
+            "role_id": 2
+        },
+        {
+            "name": "Carol White",
+            "email": "carol.white@example.com",
+            "password": "Password@1",
+            "phone": "5555555555",
+            "gender": "Female",
+            "role_id": 3
+        },
+        {
+            "name": "Dave Brown",
+            "email": "dave.brown@example.com",
+            "password": "Password@1",
+            "phone": "1111111111",
+            "gender": "Male",
+            "role_id": 3
+        }
+    ],
+    "Software Development / IT": {
+        "projects": [
+            {
+                "name": "Mobile Banking App",
+                "code": "MBA",
+                "description": "Building a secure mobile banking application.",
+                "project_lead": "Alice Johnson"
+            },
+            {
+                "name": "DevOps Pipeline",
+                "code": "DPI",
+                "description": "Implementing CI/CD workflows across departments.",
+                "project_lead": "Bob Smith"
+            },
+            {
+                "name": "Infrastructure Migration",
+                "code": "INM",
+                "description": "Migrating on-prem servers to cloud.",
+                "project_lead": "Carol White"
+            },
+            {
+                "name": "API Gateway",
+                "code": "AGW",
+                "description": "Centralized API management and security.",
+                "project_lead": "Dave Brown"
+            },
+            {
+                "name": "Legacy System Modernization",
+                "code": "LSM",
+                "description": "Updating outdated core systems.",
+                "project_lead": "Dave Brown"
+            },
+            {
+                "name": "Microservices Architecture",
+                "code": "MIA",
+                "description": "Breaking monolith into microservices.",
+                "project_lead": "Carol White"
+            },
+            {
+                "name": "Security Compliance",
+                "code": "SCM",
+                "description": "Ensuring systems meet security standards.",
+                "project_lead": "Carol White"
+            }
+        ],
+        "issues": [
+            {
+                "title": "Authentication Bypass in Login",
+                "description": "Security vulnerability in login flow.",
+                "type": "Bug",
+                "severity": "Blocker",
+                "user": "Dave Brown",
+                "assignee": "Alice Johnson",
+                "project_name": "API Gateway"
+            },
+            {
+                "title": "Homepage Performance",
+                "description": "Loading time exceeds 3s on mobile devices.",
+                "type": "Bug",
+                "severity": "Major",
+                "user": "Carol White",
+                "assignee": "Bob Smith",
+                "project_name": "Microservices Architecture"
+            },
+            {
+                "title": "Add Dark Mode Support",
+                "description": "Implement dark mode across all screens.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "user": "Alice Johnson",
+                "assignee": "Dave Brown",
+                "project_name": "Mobile Banking App"
+            },
+            {
+                "title": "Jenkins Pipeline Failure",
+                "description": "Nightly build failing on test phase.",
+                "type": "Bug",
+                "severity": "Major",
+                "user": "Bob Smith",
+                "assignee": "Carol White",
+                "project_name": "DevOps Pipeline"
+            },
+            {
+                "title": "AWS Lambda Cold Start",
+                "description": "Serverless functions have slow initial response.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "user": "Carol White",
+                "assignee": "Alice Johnson",
+                "project_name": "Security Compliance"
+            },
+            {
+                "title": "Database Index Optimization",
+                "description": "Slow queries on user transaction",
+                "type": "Improvement",
+                "severity": "Major",
+                "user": "Bob Smith",
+                "assignee": "Dave Brown",
+                "project_name": "DevOps Pipeline"
+            },
+            {
+                "title": "Implement SSO",
+                "description": "Add support for Google and Microsoft auth.",
+                "type": "New Feature",
+                "severity": "Major",
+                "user": "Dave Brown",
+                "assignee": "Carol White",
+                "project_name": "API Gateway"
+            },
+            {
+                "title": "API Rate Limiting",
+                "description": "Implement throttling to prevent abuse.",
+                "type": "Task",
+                "severity": "Major",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith",
+                "project_name": "Mobile Banking App"
+            },
+            {
+                "title": "Documentation Update",
+                "description": "Update API docs to reflect new endpoints.",
+                "type": "Task",
+                "severity": "Trivial",
+                "user": "Dave Brown",
+                "assignee": "Carol White",
+                "project_name": "API Gateway"
+            },
+            {
+                "title": "Docker Image Size",
+                "description": "Reduce container size by 40%.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "user": "Bob Smith",
+                "assignee": "Alice Johnson",
+                "project_name": "DevOps Pipeline"
+            },
+            {
+                "title": "Feature Flag System",
+                "description": "Implement toggle system for gradual rollouts.",
+                "type": "New Feature",
+                "severity": "Major",
+                "user": "Carol White",
+                "assignee": "Dave Brown",
+                "project_name": "Security Compliance"
+            },
+            {
+                "title": "Memory Leak in Worker Service",
+                "description": "Service crashes after 48h uptime.",
+                "type": "Bug",
+                "severity": "Blocker",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith",
+                "project_name": "Mobile Banking App"
+            },
+            {
+                "title": "Zero Downtime Deployment",
+                "description": "Implement blue-green deployment strategy.",
+                "type": "Improvement",
+                "severity": "Major",
+                "user": "Dave Brown",
+                "assignee": "Carol White",
+                "project_name": "API Gateway"
+            },
+            {
+                "title": "Security Scan Findings",
+                "description": "Address vulnerabilities from latest scan.",
+                "type": "Task",
+                "severity": "Critical",
+                "user": "Bob Smith",
+                "assignee": "Alice Johnson",
+                "project_name": "DevOps Pipeline"
+            },
+            {
+                "title": "Client-side Validation",
+                "description": "Add form validation to prevent bad data.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "user": "Carol White",
+                "assignee": "Dave Brown",
+                "project_name": "Microservices Architecture"
+            }
+        ],
+        "comments": [
+            {
+                "issue_title": "Authentication Bypass in Login",
+                "description": "This is exploitable in production, needs hotfix ASAP.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Homepage Performance",
+                "description": "We need to lazy load images and implement better caching.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Add Dark Mode Support",
+                "description": "Should follow system preference by default.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Jenkins Pipeline Failure",
+                "description": "Failing test is in the payment gateway mock.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "AWS Lambda Cold Start",
+                "description": "Consider using provisioned concurrency for critical functions.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Database Index Optimization",
+                "description": "Added composite index on user_id and transaction_date.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Implement SSO",
+                "description": "Legal team needs to review privacy implications first.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "API Rate Limiting",
+                "description": "Suggest 100 req/min for free tier, 1000 for premium.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Documentation Update",
+                "description": "We should automate this with Swagger.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Docker Image Size",
+                "description": "Switch to alpine base image and multi-stage builds.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Feature Flag System",
+                "description": "LaunchDarkly looks promising but expensive.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Memory Leak in Worker Service",
+                "description": "Found in image processing library, upgrade to latest version.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Zero Downtime Deployment",
+                "description": "Need to update DNS configuration too.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Security Scan Findings",
+                "description": "8 high priority issues, 12 medium. Assigned to security team.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Client-side Validation",
+                "description": "Remember we still need server-side validation too.",
+                "comment_by": "Carol White"
+            }
+        ]
+    },
+    "Software Development Company": {
+        "projects": [
+            {
+                "name": "Company HR Management",
+                "description": "Manage internal employees, hierarchy and hiring.",
+                "code": "CHM",
+                "project_lead": "Alice Johnson"
+            },
+            {
+                "name": "Sales And Marketing",
+                "description": "Manage all marketing campaigns and sales operations.",
+                "code": "SAM",
+                "project_lead": "Bob Smith"
+            },
+            {
+                "name": "Company Digital Resources",
+                "description": "Manage website, branding and online presence.",
+                "code": "CDR",
+                "project_lead": "Carol White"
+            },
+            {
+                "name": "Product Management",
+                "description": "Oversee product features, design and implementation.",
+                "code": "PM",
+                "project_lead": "Dave Brown"
+            },
+            {
+                "name": "Product Support and CRM",
+                "description": "Customer support operations and template handling.",
+                "code": "PSC",
+                "project_lead": "Alice Johnson"
+            },
+            {
+                "name": "Business Development",
+                "description": "Generate leads and client communications.",
+                "code": "BD",
+                "project_lead": "Bob Smith"
+            },
+            {
+                "name": "AI Assistant and Alerts",
+                "description": "Automated alerts and assistant summaries.",
+                "code": "AAA",
+                "project_lead": "Carol White"
+            }
+        ],
+        "issues": [
+            {
+                "title": "Company Reporting Hierarchy",
+                "description": "Design a flexible reporting structure.",
+                "type": "Improvement",
+                "severity": "Major",
+                "project_name": "Company HR Management",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Open Positions and Recruitment",
+                "description": "Track and display current open roles.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Company HR Management",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Product Launch",
+                "description": "Coordinate resources and timing for Q3 launch.",
+                "type": "Task",
+                "severity": "Major",
+                "project_name": "Product Management",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Market Research",
+                "description": "Collect competitive analysis.",
+                "type": "New Feature",
+                "severity": "Trivial",
+                "project_name": "Sales And Marketing",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Website Design",
+                "description": "Create modern UI/UX.",
+                "type": "New Feature",
+                "severity": "Major",
+                "project_name": "Company Digital Resources",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Online Advertisement",
+                "description": "Setup Google and LinkedIn ads.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Sales And Marketing",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Product Features",
+                "description": "Prioritize features for next sprint.",
+                "type": "Improvement",
+                "severity": "Major",
+                "project_name": "Product Management",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Product Design",
+                "description": "Revamp dashboard interface.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "project_name": "Product Management",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Product Implementation",
+                "description": "Develop API endpoints.",
+                "type": "Task",
+                "severity": "Blocker",
+                "project_name": "Product Management",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Customer response templates",
+                "description": "Standard replies for common queries.",
+                "type": "New Feature",
+                "severity": "Trivial",
+                "project_name": "Product Support and CRM",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Leads Aggregation",
+                "description": "Scrape and enrich potential contacts.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Sales And Marketing",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Communication with client A",
+                "description": "Organize meeting notes and status.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Business Development",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Today's summary of the company priorities",
+                "description": "Generate daily summaries using LLM.",
+                "type": "New Feature",
+                "severity": "Major",
+                "project_name": "AI Assistant and Alerts",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "News summary in the business space",
+                "description": "Collect industry news daily.",
+                "type": "Task",
+                "severity": "Trivial",
+                "project_name": "AI Assistant and Alerts",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "New developments with our clients",
+                "description": "Track updates and milestones of key clients.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Business Development",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            }
+        ],
+        "comments": [
+            {
+                "issue_title": "Company Reporting Hierarchy",
+                "description": "Consider supporting matrix structures too.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Open Positions and Recruitment",
+                "description": "Sync data with LinkedIn Jobs API.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Product Launch",
+                "description": "Timeline looks tight, we might need extra dev resources.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Market Research",
+                "description": "Check out Gartner's latest reports.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Website Design",
+                "description": "Look into using Tailwind or Bootstrap 5.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Online Advertisement",
+                "description": "We should A/B test ad creatives.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Product Features",
+                "description": "Voting system might help prioritize features.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Product Design",
+                "description": "Consider accessibility guidelines too.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Product Implementation",
+                "description": "Use FastAPI for backend.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Customer response templates",
+                "description": "We can train chatbot for this.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Leads Aggregation",
+                "description": "Try Apollo.io for enrichment.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Communication with client A",
+                "description": "Use CRM timeline for meetings.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Today's summary of the company priorities",
+                "description": "Use OpenAI's GPT to generate this automatically.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "News summary in the business space",
+                "description": "Use Google News RSS with filters.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "New developments with our clients",
+                "description": "Add webhook triggers from CRM.",
+                "comment_by": "Carol White"
+            }
+        ]
+    },
+    "Recruitment Firm": {
+        "projects": [
+            {
+                "name": "Candidate Sourcing",
+                "description": "Sourcing and vetting qualified job applicants.",
+                "code": "Can",
+                "project_lead": "Alice Johnson",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "name": "Client Relationship Management",
+                "description": "Managing communication and contracts with employers.",
+                "code": "Cli",
+                "project_lead": "Bob Smith",
+                "user": "Bob Smith",
+                "assignee": "Carol White"
+            },
+            {
+                "name": "Job Board Integration",
+                "description": "Sync job postings with external platforms like LinkedIn, Indeed, Glassdoor.",
+                "code": "Job",
+                "project_lead": "Carol White",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "name": "Interview Coordination",
+                "description": "Scheduling interviews between candidates and clients.",
+                "code": "Int",
+                "project_lead": "Dave Brown",
+                "user": "Dave Brown",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "name": "Background Verification",
+                "description": "Conducting background checks and reference verifications.",
+                "code": "Bac",
+                "project_lead": "Alice Johnson",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "name": "Payroll & Contract Management",
+                "description": "Handling candidate payroll and contract documentation.",
+                "code": "Pay",
+                "project_lead": "Bob Smith",
+                "user": "Bob Smith",
+                "assignee": "Carol White"
+            },
+            {
+                "name": "Talent Database",
+                "description": "Maintaining a searchable database of available talent.",
+                "code": "Tal",
+                "project_lead": "Carol White",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            }
+        ],
+        "issues": [
+            {
+                "title": "Job Posting Syndication",
+                "description": "Automate posting jobs across multiple platforms.",
+                "type": "New Feature",
+                "severity": "Major",
+                "project_name": "Job Board Integration",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Candidate Matching Algorithm",
+                "description": "Improve matching based on skills and experience.",
+                "type": "Improvement",
+                "severity": "Major",
+                "project_name": "Candidate Sourcing",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Interview Feedback System",
+                "description": "Centralized feedback collection from interviewers.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Interview Coordination",
+                "user": "Bob Smith",
+                "assignee": "Carol White"
+            },
+            {
+                "title": "Client Onboarding Process",
+                "description": "Streamline initial setup and agreement signing.",
+                "type": "Task",
+                "severity": "Major",
+                "project_name": "Client Relationship Management",
+                "user": "Dave Brown",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "title": "Resume Parsing Tool",
+                "description": "Extract structured data from resumes.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Candidate Sourcing",
+                "user": "Alice Johnson",
+                "assignee": "Carol White"
+            },
+            {
+                "title": "Candidate Communication Workflow",
+                "description": "Automate follow-ups and notifications.",
+                "type": "Improvement",
+                "severity": "Major",
+                "project_name": "Candidate Sourcing",
+                "user": "Bob Smith",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Data Privacy Compliance",
+                "description": "Ensure GDPR compliance in candidate data handling.",
+                "type": "Task",
+                "severity": "Blocker",
+                "project_name": "Background Verification",
+                "user": "Carol White",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "title": "Performance Dashboard",
+                "description": "Visualize recruiter KPIs and placement stats.",
+                "type": "New Feature",
+                "severity": "Major",
+                "project_name": "Payroll & Contract Management",
+                "user": "Dave Brown",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Mobile Application for Candidates",
+                "description": "Allow candidates to apply and track progress.",
+                "type": "New Feature",
+                "severity": "Major",
+                "project_name": "Talent Database",
+                "user": "Alice Johnson",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Video Interview Integration",
+                "description": "Integrate Zoom or Microsoft Teams for remote interviews.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Interview Coordination",
+                "user": "Carol White",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Referral Program",
+                "description": "Enable employee referrals and track rewards.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "project_name": "Candidate Sourcing",
+                "user": "Bob Smith",
+                "assignee": "Carol White"
+            },
+            {
+                "title": "CRM Sync with Email",
+                "description": "Automatic logging of email interactions.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Client Relationship Management",
+                "user": "Alice Johnson",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Onboarding Training Materials",
+                "description": "Create guides and tutorials for new recruiters.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Candidate Sourcing",
+                "user": "Carol White",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "title": "Exit Interviews for Placed Candidates",
+                "description": "Gather feedback post-placement.",
+                "type": "New Feature",
+                "severity": "Trivial",
+                "project_name": "Payroll & Contract Management",
+                "user": "Dave Brown",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Client Satisfaction Surveys",
+                "description": "Measure satisfaction after placements.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Client Relationship Management",
+                "user": "Bob Smith",
+                "assignee": "Carol White"
+            }
+        ],
+        "comments": [
+            {
+                "issue_title": "Job Posting Syndication",
+                "description": "Use APIs from LinkedIn and Indeed for real-time sync.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Candidate Matching Algorithm",
+                "description": "Use NLP techniques to extract keywords from resumes.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Interview Feedback System",
+                "description": "Use standardized rating scales for consistency.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Client Onboarding Process",
+                "description": "Use DocuSign or HelloSign for digital signatures.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Resume Parsing Tool",
+                "description": "Leverage libraries like Pyresparser or custom models.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Candidate Communication Workflow",
+                "description": "Use Twilio or SendGrid for automation.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Data Privacy Compliance",
+                "description": "Consult legal experts before finalizing processes.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Performance Dashboard",
+                "description": "Use tools like Power BI or Tableau for visualization.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Mobile Application for Candidates",
+                "description": "React Native or Flutter would be good choices.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Video Interview Integration",
+                "description": "Embed Zoom links directly in the app.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Referral Program",
+                "description": "Gamify the process to increase participation.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "CRM Sync with Email",
+                "description": "Use Gmail and Outlook APIs for integration.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Onboarding Training Materials",
+                "description": "Create short videos and interactive quizzes.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Exit Interviews for Placed Candidates",
+                "description": "Send surveys via email or SMS.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Client Satisfaction Surveys",
+                "description": "Include Net Promoter Score (NPS) questions.",
+                "comment_by": "Carol White"
+            }
+        ]
+    },
+    "Interviewer": {
+        "projects": [
+            {
+                "name": "Technical Screening",
+                "description": "Evaluate coding and problem-solving skills.",
+                "code": "TEC",
+                "project_lead": "Dave Brown",
+                "user": "Dave Brown",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "name": "Behavioral Assessment",
+                "description": "Assess personality fit and cultural alignment.",
+                "code": "BEA",
+                "project_lead": "Alice Johnson",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "name": "Feedback Documentation",
+                "description": "Record and share detailed interview evaluations.",
+                "code": "FED",
+                "project_lead": "Bob Smith",
+                "user": "Bob Smith",
+                "assignee": "Carol White"
+            },
+            {
+                "name": "Mock Interviews",
+                "description": "Provide practice sessions for junior interviewers.",
+                "code": "MOI",
+                "project_lead": "Carol White",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "name": "Interview Question Bank",
+                "description": "Maintain categorized and updated question sets.",
+                "code": "IQB",
+                "project_lead": "Dave Brown",
+                "user": "Dave Brown",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "name": "Interview Rating System",
+                "description": "Standardized scoring for consistent evaluations.",
+                "code": "IRS",
+                "project_lead": "Alice Johnson",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "name": "Remote Interview Setup",
+                "description": "Prepare tools and environment for virtual interviews.",
+                "code": "RIS",
+                "project_lead": "Bob Smith",
+                "user": "Bob Smith",
+                "assignee": "Carol White"
+            }
+        ],
+        "issues": [
+            {
+                "title": "Consistent Evaluation Criteria",
+                "description": "Define standard rubrics for interviews.",
+                "type": "Improvement",
+                "severity": "Major",
+                "project_name": "Interview Rating System",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Time Management During Interviews",
+                "description": "Set time limits per section.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Technical Screening",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Bias Reduction in Hiring",
+                "description": "Implement blind interview practices.",
+                "type": "Improvement",
+                "severity": "Major",
+                "project_name": "Behavioral Assessment",
+                "user": "Bob Smith",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "title": "Interviewer Training",
+                "description": "Provide regular training sessions.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Mock Interviews",
+                "user": "Dave Brown",
+                "assignee": "Carol White"
+            },
+            {
+                "title": "Feedback Turnaround Time",
+                "description": "Reduce delays in submitting evaluation results.",
+                "type": "Task",
+                "severity": "Major",
+                "project_name": "Feedback Documentation",
+                "user": "Alice Johnson",
+                "assignee": "Carol White"
+            },
+            {
+                "title": "Virtual Interview Tools",
+                "description": "Select and configure best-in-class video tools.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Remote Interview Setup",
+                "user": "Bob Smith",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Post-Interview Candidate Debrief",
+                "description": "Give candidates actionable feedback.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "project_name": "Feedback Documentation",
+                "user": "Carol White",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "title": "Interview Recording and Review",
+                "description": "Record interviews for review and coaching.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Feedback Documentation",
+                "user": "Dave Brown",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Candidate Ranking System",
+                "description": "Rank candidates post-interview for comparison.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Interview Rating System",
+                "user": "Alice Johnson",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Interview Schedule Conflicts",
+                "description": "Avoid overlapping interview slots.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Feedback Documentation",
+                "user": "Carol White",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Question Duplication",
+                "description": "Prevent repetition of similar questions.",
+                "type": "Task",
+                "severity": "Minor",
+                "project_name": "Interview Question Bank",
+                "user": "Bob Smith",
+                "assignee": "Alice Johnson"
+            },
+            {
+                "title": "Interviewer Availability",
+                "description": "Track availability for better scheduling.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "project_name": "Technical Screening",
+                "user": "Dave Brown",
+                "assignee": "Carol White"
+            },
+            {
+                "title": "Diversity Metrics Tracking",
+                "description": "Measure diversity outcomes in hiring.",
+                "type": "New Feature",
+                "severity": "Major",
+                "project_name": "Behavioral Assessment",
+                "user": "Alice Johnson",
+                "assignee": "Bob Smith"
+            },
+            {
+                "title": "Interviewer Performance Reviews",
+                "description": "Rate interviewers based on candidate feedback.",
+                "type": "Improvement",
+                "severity": "Minor",
+                "project_name": "Feedback Documentation",
+                "user": "Carol White",
+                "assignee": "Dave Brown"
+            },
+            {
+                "title": "Real-Time Collaboration with Recruiters",
+                "description": "Instantly share notes during interviews.",
+                "type": "New Feature",
+                "severity": "Minor",
+                "project_name": "Feedback Documentation",
+                "user": "Bob Smith",
+                "assignee": "Alice Johnson"
+            }
+        ],
+        "comments": [
+            {
+                "issue_title": "Consistent Evaluation Criteria",
+                "description": "Involve HR and team leads in rubric creation.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Time Management During Interviews",
+                "description": "Use timers or built-in prompts.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Bias Reduction in Hiring",
+                "description": "Use anonymized profiles where possible.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Interviewer Training",
+                "description": "Host monthly workshops with role-play scenarios.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Feedback Turnaround Time",
+                "description": "Set a 24-hour SLA for feedback submission.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Virtual Interview Tools",
+                "description": "Zoom Enterprise or Microsoft Teams are reliable options.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Post-Interview Candidate Debrief",
+                "description": "Balance honesty and empathy.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Interview Recording and Review",
+                "description": "Ensure compliance with local laws.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Candidate Ranking System",
+                "description": "Use weighted scores for different criteria.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Interview Schedule Conflicts",
+                "description": "Integrate with Google Calendar or Outlook.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Question Duplication",
+                "description": "Build a shared question bank with tagging.",
+                "comment_by": "Bob Smith"
+            },
+            {
+                "issue_title": "Interviewer Availability",
+                "description": "Allow calendar sync and auto-suggestions.",
+                "comment_by": "Carol White"
+            },
+            {
+                "issue_title": "Diversity Metrics Tracking",
+                "description": "Collect optional demographic data during application.",
+                "comment_by": "Dave Brown"
+            },
+            {
+                "issue_title": "Interviewer Performance Reviews",
+                "description": "Use anonymous candidate feedback forms.",
+                "comment_by": "Alice Johnson"
+            },
+            {
+                "issue_title": "Real-Time Collaboration with Recruiters",
+                "description": "Use Slack or embedded notes in ATS.",
+                "comment_by": "Bob Smith"
+            }
+        ]
+    }
+}
