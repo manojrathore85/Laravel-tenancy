@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\DemoDataSeeder;
 
+use App\Models\Tenant\DemoDataLog;
 use App\Models\Tenant\User;
 use App\Models\Tenant\UserHasProject;
 use Illuminate\Database\Seeder;
@@ -97,7 +98,7 @@ class DemoDataSeeder extends Seeder
                 $issue = \App\Models\Tenant\Issue::create([
                     'summery' => $issueData['title'],
                     'description' => $issueData['description'],
-                    'status' => 'open',
+                    'status' => 'Open',
                     'project_id' =>   $projectModels[$issueData['project_name']]->id,
                     'assigned_to' => $userModels[$issueData['assignee']]->id,
                     'created_by' => $userModels[$issueData['user']]->id,
@@ -119,11 +120,19 @@ class DemoDataSeeder extends Seeder
                 ]);
                 $this->insertedIds['comments'][] = $comment->id;
             }
+            foreach ($this->insertedIds as $key => $value) {
+                \App\Models\Tenant\DemoDataLog::create([
+                    'table_name'=>$key,
+                    'ids'=>implode(',', $value),
+                ]);
+
+                
+            }
             DB::commit();
-            file_put_contents(
-                base_path('storage/app/public/demo_ids.json'),
-                json_encode($this->insertedIds, JSON_PRETTY_PRINT)
-            );
+            // file_put_contents(
+            //     base_path('storage/app/public/demo_ids.json'),
+            //     json_encode($this->insertedIds, JSON_PRETTY_PRINT)
+            // );
             $user = User::find(auth()->user()->id); 
             $assignedProjects = $user->projects;
             $user->assigned_projects = $assignedProjects;
@@ -138,47 +147,51 @@ class DemoDataSeeder extends Seeder
     {
         DB::beginTransaction();
         try {
-            $ids = $this->getseededData();
+            $demoData = $this->getseededData();
 
-            if (empty($ids)) {
+            if (empty($demoData)) {
                 return "No demo data found.";
             }
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-            if (!empty($ids['comments'])) {
-                DB::table('comments')->whereIn('id', $ids['comments'])->delete();
+            foreach($demoData as $key => $value) {
+                DB::table($key)->whereIn('id', $value)->delete();
             }
 
-            if (!empty($ids['issues'])) {
-                DB::table('issues')->whereIn('id', $ids['issues'])->delete();
-            }
 
-            if (!empty($ids['user_has_project'])) {
-                DB::table('user_has_project')->whereIn('id', $ids['user_has_project'])->delete();
-            }
+            // if (!empty($ids['comments'])) {
+            //     DB::table('comments')->whereIn('id', $ids['comments'])->delete();
+            // }
 
-            if (!empty($ids['projects'])) {
-                DB::table('projects')->whereIn('id', $ids['projects'])->delete();
-            }
-            if (!empty($ids['users'])) {
-                DB::table('users')->whereIn('id', $ids['users'])->delete();
-            }
+            // if (!empty($ids['issues'])) {
+            //     DB::table('issues')->whereIn('id', $ids['issues'])->delete();
+            // }
 
+            // if (!empty($ids['user_has_project'])) {
+            //     DB::table('user_has_project')->whereIn('id', $ids['user_has_project'])->delete();
+            // }
+
+            // if (!empty($ids['projects'])) {
+            //     DB::table('projects')->whereIn('id', $ids['projects'])->delete();
+            // }
+            // if (!empty($ids['users'])) {
+            //     DB::table('users')->whereIn('id', $ids['users'])->delete();
+            // }
+
+            \App\Models\Tenant\DemoDataLog::truncate();
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
             // Commit the database changes
             DB::commit();
 
             // Only clear the file after commit
-            $path = base_path('storage/app/public/demo_ids.json');
-            if (!file_exists($path)) {
-                touch($path);
-                chmod($path, 0777);
-            }
-            file_put_contents(
-                $path,
-                json_encode([], JSON_PRETTY_PRINT)
-            );
+            // $path = base_path('storage/app/public/demo_ids.json');
+            // if (!file_exists($path)) {
+            //     touch($path);
+            //     chmod($path, 0777);
+            // }
+            // file_put_contents(
+            //     $path,
+            //     json_encode([], JSON_PRETTY_PRINT)
+            // );
 
              $user = User::find(auth()->user()->id); 
             $assignedProjects = $user->projects;
@@ -194,8 +207,8 @@ class DemoDataSeeder extends Seeder
     public function getDomainType()
     {
         $isDemoDataExist = false;
-        $ids = $this->getseededData();
-        if (!empty($ids)) {
+        $data = $this->getseededData();
+        if (!$data->isEmpty()) {
             $isDemoDataExist = true;
         }
         $domains = [];
@@ -212,11 +225,6 @@ class DemoDataSeeder extends Seeder
     }
     private function getseededData()
     {
-        $path = base_path('storage/app/public/demo_ids.json');
-        if (file_exists($path)) {
-            return json_decode(file_get_contents($path), true);
-        } else {
-            throw new \Exception("Demo IDs file not found.");
-        }
+        return \App\Models\Tenant\DemoDataLog::all(); // DemoDataLog::all(); 
     }
 }

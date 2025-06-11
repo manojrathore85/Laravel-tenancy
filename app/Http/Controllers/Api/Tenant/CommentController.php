@@ -261,7 +261,7 @@ class CommentController extends Controller
             $idsArray= explode(",", $ids);
             $attachments= Comment::find($idsArray)->pluck('attachment');
             foreach($attachments as $attachment){
-                if($attachment->attachment && Storage::disk('public')->exists($$attachment->attachment)){
+                if($attachment?->attachment && Storage::disk('public')->exists($$attachment->attachment)){
                     Storage::disk('public')->delete($attachment->attachment);
                 }
             }

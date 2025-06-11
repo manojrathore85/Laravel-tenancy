@@ -80,9 +80,9 @@ class IssueController extends Controller
                 })
                 ->when($request->filled('tag') && $request->tag == 'important', function ($query) use ($request) {
                     $query->where(function ($q) {
-                        $q->where('issues.severity', 'major')
-                        ->orWhere('issues.severity', 'blocker')
-                        ->orWhere('issues.severity', 'critical');
+                        $q->where('issues.severity', 'Major')
+                        ->orWhere('issues.severity', 'Blocker')
+                        ->orWhere('issues.severity', 'Critical');
                     });                    
                 })          
                 ->when($request->filled('order_by') && !empty($request->order_by), function ($query) use ($request) {

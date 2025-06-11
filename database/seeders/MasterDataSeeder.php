@@ -33,19 +33,22 @@ class MasterDataSeeder extends Seeder
 
          IssueStatus::insert([
             [
-            'name' => 'open',           
+            'name' => 'Open',           
             ],
             [
-            'name' => 'pending',           
+            'name' => 'Pending',           
             ],
             [
-            'name' => 'resolved',            
+            'name' => 'In Progress',           
             ],
             [
-                'name' => 'closed'
+            'name' => 'Resolved',            
+            ],
+            [
+                'name' => 'Closed'
             ],
              [
-                'name' => 'reopned'
+                'name' => 'Reopned'
             ]
         ]);
 
