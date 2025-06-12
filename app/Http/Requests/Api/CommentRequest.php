@@ -23,8 +23,8 @@ class CommentRequest extends FormRequest
     {
         return [
             'issue_id' => 'required|exists:issues,id',
-            'description' => 'required|string|max:5000',
-            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2 mb
+            'description' => 'required|string',
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg, zip,rar, doc,docx,xls,xlsx,text,pdf,csv,ppt,pptx|max:51200', // 50 mb
         ];
     }
 }

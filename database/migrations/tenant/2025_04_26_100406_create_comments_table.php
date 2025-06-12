@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('comment_by')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('update_by')->default(0)->nullable();
            // $table->foreign('update_by')->references('id')->on('users')->onDelete('cascade');
-            $table->text('description');
+            $table->mediumText('description');
             $table->string('attachment', 255)->nullable();
             $table->timestamps();
         });

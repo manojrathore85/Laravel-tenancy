@@ -25,7 +25,13 @@ class CommentController extends Controller
                         ->orWhere('issues.assigned_to', auth()->id());
                     });
                 })->pluck('id');
-        $comments = Comment::with('commentBy')->with('updatedBy')->with('issue')
+        $comments = Comment::with('commentBy')
+        ->with('updatedBy')
+        ->with('issue')
+        ->with('issue.createdBy')
+        ->with('issue.updatedBy')
+        ->with('issue.assignedTo')
+        ->with('issue.project')
         ->whereIn('issue_id', $issues)
         ->latest()
         ->get();

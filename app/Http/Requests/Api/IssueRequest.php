@@ -28,10 +28,10 @@ class IssueRequest extends FormRequest
             //'created_by' => 'required|exists:users,id',
             'issue_type' => 'required',
             'severity'  => 'required',
-            'summery'=> 'required|string|max:255',
+            'summery'=> 'required|string|max:1000',
             'assigned_to' => 'required|exists:users,id',
-            'description' => 'required|string|max:1000',
-            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',           
+            'description' => 'required|string',
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg, zip,rar, doc,docx,xls,xlsx,text,pdf,csv,ppt,pptx|max:51200', // 50 mb          
         ];
     }
 }

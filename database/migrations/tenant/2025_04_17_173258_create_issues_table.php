@@ -19,10 +19,10 @@ return new class extends Migration
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->string('issue_type',50);
             $table->string('severity',50);
-            $table->string('summery',200);
+            $table->string('summery', 1000);
             $table->unsignedBigInteger('assigned_to');
             $table->foreign('assigned_to')->references('id')->on('users')->onDelete('cascade');
-            $table->string('description', 1000);
+            $table->mediumText('description');
             $table->binary('attachment')->nullable();
             $table->string('status')->default('Open');
             $table->unsignedBigInteger('updated_by')->nullable();
